@@ -1,0 +1,436 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		18A34B0B1DD1BDD600973CEE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B0A1DD1BDD600973CEE /* main.m */; };
+		18A34B161DD1BDD600973CEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B151DD1BDD600973CEE /* Assets.xcassets */; };
+		18A34B221DD1BE1A00973CEE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B201DD1BE1A00973CEE /* LaunchScreen.storyboard */; };
+		18A34B4B1DD1BE2300973CEE /* UICollectionView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B3A1DD1BE2300973CEE /* UICollectionView+RollView.m */; };
+		18A34B4C1DD1BE2300973CEE /* UITableView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B3C1DD1BE2300973CEE /* UITableView+RollView.m */; };
+		18A34B4D1DD1BE2300973CEE /* UIView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B3E1DD1BE2300973CEE /* UIView+RollView.m */; };
+		18A34B671DD1D1A900973CEE /* XYCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B511DD1D1A900973CEE /* XYCollectionViewCell.m */; };
+		18A34B681DD1D1A900973CEE /* XYCollectionViewControlleC.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B531DD1D1A900973CEE /* XYCollectionViewControlleC.m */; };
+		18A34B691DD1D1A900973CEE /* XYCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B551DD1D1A900973CEE /* XYCollectionViewController.m */; };
+		18A34B6A1DD1D1A900973CEE /* XYTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B571DD1D1A900973CEE /* XYTabBarController.m */; };
+		18A34B6B1DD1D1A900973CEE /* XYTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B591DD1D1A900973CEE /* XYTableViewController.m */; };
+		18A34B6C1DD1D1A900973CEE /* XYPlanItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B5C1DD1D1A900973CEE /* XYPlanItem.m */; };
+		18A34B6D1DD1D1A900973CEE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B5F1DD1D1A900973CEE /* AppDelegate.m */; };
+		18A34B6E1DD1D1A900973CEE /* planGroup.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B601DD1D1A900973CEE /* planGroup.plist */; };
+		18A34B6F1DD1D1A900973CEE /* plans.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B611DD1D1A900973CEE /* plans.plist */; };
+		18A34B701DD1D1A900973CEE /* XYCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B631DD1D1A900973CEE /* XYCollectionViewCell.xib */; };
+		18A34B711DD1D1A900973CEE /* XYRollViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B651DD1D1A900973CEE /* XYRollViewCell.m */; };
+		18A34B721DD1D1A900973CEE /* XYRollViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B661DD1D1A900973CEE /* XYRollViewCell.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		18A34B061DD1BDD600973CEE /* XYRearrangeCell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XYRearrangeCell.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18A34B0A1DD1BDD600973CEE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		18A34B151DD1BDD600973CEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		18A34B1A1DD1BDD600973CEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18A34B211DD1BE1A00973CEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		18A34B391DD1BE2300973CEE /* UICollectionView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+RollView.h"; sourceTree = "<group>"; };
+		18A34B3A1DD1BE2300973CEE /* UICollectionView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+RollView.m"; sourceTree = "<group>"; };
+		18A34B3B1DD1BE2300973CEE /* UITableView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+RollView.h"; sourceTree = "<group>"; };
+		18A34B3C1DD1BE2300973CEE /* UITableView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+RollView.m"; sourceTree = "<group>"; };
+		18A34B3D1DD1BE2300973CEE /* UIView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+RollView.h"; sourceTree = "<group>"; };
+		18A34B3E1DD1BE2300973CEE /* UIView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+RollView.m"; sourceTree = "<group>"; };
+		18A34B501DD1D1A900973CEE /* XYCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCollectionViewCell.h; sourceTree = "<group>"; };
+		18A34B511DD1D1A900973CEE /* XYCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYCollectionViewCell.m; sourceTree = "<group>"; };
+		18A34B521DD1D1A900973CEE /* XYCollectionViewControlleC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCollectionViewControlleC.h; sourceTree = "<group>"; };
+		18A34B531DD1D1A900973CEE /* XYCollectionViewControlleC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYCollectionViewControlleC.m; sourceTree = "<group>"; };
+		18A34B541DD1D1A900973CEE /* XYCollectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCollectionViewController.h; sourceTree = "<group>"; };
+		18A34B551DD1D1A900973CEE /* XYCollectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYCollectionViewController.m; sourceTree = "<group>"; };
+		18A34B561DD1D1A900973CEE /* XYTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYTabBarController.h; sourceTree = "<group>"; };
+		18A34B571DD1D1A900973CEE /* XYTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYTabBarController.m; sourceTree = "<group>"; };
+		18A34B581DD1D1A900973CEE /* XYTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYTableViewController.h; sourceTree = "<group>"; };
+		18A34B591DD1D1A900973CEE /* XYTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYTableViewController.m; sourceTree = "<group>"; };
+		18A34B5B1DD1D1A900973CEE /* XYPlanItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYPlanItem.h; sourceTree = "<group>"; };
+		18A34B5C1DD1D1A900973CEE /* XYPlanItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYPlanItem.m; sourceTree = "<group>"; };
+		18A34B5E1DD1D1A900973CEE /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		18A34B5F1DD1D1A900973CEE /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		18A34B601DD1D1A900973CEE /* planGroup.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = planGroup.plist; sourceTree = "<group>"; };
+		18A34B611DD1D1A900973CEE /* plans.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = plans.plist; sourceTree = "<group>"; };
+		18A34B631DD1D1A900973CEE /* XYCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XYCollectionViewCell.xib; sourceTree = "<group>"; };
+		18A34B641DD1D1A900973CEE /* XYRollViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYRollViewCell.h; sourceTree = "<group>"; };
+		18A34B651DD1D1A900973CEE /* XYRollViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYRollViewCell.m; sourceTree = "<group>"; };
+		18A34B661DD1D1A900973CEE /* XYRollViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XYRollViewCell.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		18A34B031DD1BDD600973CEE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18A34AFD1DD1BDD600973CEE = {
+			isa = PBXGroup;
+			children = (
+				18A34B081DD1BDD600973CEE /* XYRearrangeCell */,
+				18A34B071DD1BDD600973CEE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		18A34B071DD1BDD600973CEE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B061DD1BDD600973CEE /* XYRearrangeCell.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		18A34B081DD1BDD600973CEE /* XYRearrangeCell */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B231DD1BE2300973CEE /* XYRearrangeCellExample */,
+				18A34B381DD1BE2300973CEE /* XYRearrangeCell */,
+				18A34B151DD1BDD600973CEE /* Assets.xcassets */,
+				18A34B201DD1BE1A00973CEE /* LaunchScreen.storyboard */,
+				18A34B1A1DD1BDD600973CEE /* Info.plist */,
+				18A34B091DD1BDD600973CEE /* Supporting Files */,
+			);
+			path = XYRearrangeCell;
+			sourceTree = "<group>";
+		};
+		18A34B091DD1BDD600973CEE /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B0A1DD1BDD600973CEE /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		18A34B231DD1BE2300973CEE /* XYRearrangeCellExample */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B4E1DD1D1A900973CEE /* Classes */,
+			);
+			name = XYRearrangeCellExample;
+			path = XYRearrangeCellDemo;
+			sourceTree = "<group>";
+		};
+		18A34B381DD1BE2300973CEE /* XYRearrangeCell */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B391DD1BE2300973CEE /* UICollectionView+RollView.h */,
+				18A34B3A1DD1BE2300973CEE /* UICollectionView+RollView.m */,
+				18A34B3B1DD1BE2300973CEE /* UITableView+RollView.h */,
+				18A34B3C1DD1BE2300973CEE /* UITableView+RollView.m */,
+				18A34B3D1DD1BE2300973CEE /* UIView+RollView.h */,
+				18A34B3E1DD1BE2300973CEE /* UIView+RollView.m */,
+			);
+			name = XYRearrangeCell;
+			path = XYRearrangeView;
+			sourceTree = "<group>";
+		};
+		18A34B4E1DD1D1A900973CEE /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B4F1DD1D1A900973CEE /* Controller */,
+				18A34B5A1DD1D1A900973CEE /* Model */,
+				18A34B5D1DD1D1A900973CEE /* Other */,
+				18A34B621DD1D1A900973CEE /* View */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		18A34B4F1DD1D1A900973CEE /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B501DD1D1A900973CEE /* XYCollectionViewCell.h */,
+				18A34B511DD1D1A900973CEE /* XYCollectionViewCell.m */,
+				18A34B521DD1D1A900973CEE /* XYCollectionViewControlleC.h */,
+				18A34B531DD1D1A900973CEE /* XYCollectionViewControlleC.m */,
+				18A34B541DD1D1A900973CEE /* XYCollectionViewController.h */,
+				18A34B551DD1D1A900973CEE /* XYCollectionViewController.m */,
+				18A34B561DD1D1A900973CEE /* XYTabBarController.h */,
+				18A34B571DD1D1A900973CEE /* XYTabBarController.m */,
+				18A34B581DD1D1A900973CEE /* XYTableViewController.h */,
+				18A34B591DD1D1A900973CEE /* XYTableViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		18A34B5A1DD1D1A900973CEE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B5B1DD1D1A900973CEE /* XYPlanItem.h */,
+				18A34B5C1DD1D1A900973CEE /* XYPlanItem.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		18A34B5D1DD1D1A900973CEE /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B5E1DD1D1A900973CEE /* AppDelegate.h */,
+				18A34B5F1DD1D1A900973CEE /* AppDelegate.m */,
+				18A34B601DD1D1A900973CEE /* planGroup.plist */,
+				18A34B611DD1D1A900973CEE /* plans.plist */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
+		18A34B621DD1D1A900973CEE /* View */ = {
+			isa = PBXGroup;
+			children = (
+				18A34B631DD1D1A900973CEE /* XYCollectionViewCell.xib */,
+				18A34B641DD1D1A900973CEE /* XYRollViewCell.h */,
+				18A34B651DD1D1A900973CEE /* XYRollViewCell.m */,
+				18A34B661DD1D1A900973CEE /* XYRollViewCell.xib */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		18A34B051DD1BDD600973CEE /* XYRearrangeCell */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18A34B1D1DD1BDD600973CEE /* Build configuration list for PBXNativeTarget "XYRearrangeCell" */;
+			buildPhases = (
+				18A34B021DD1BDD600973CEE /* Sources */,
+				18A34B031DD1BDD600973CEE /* Frameworks */,
+				18A34B041DD1BDD600973CEE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = XYRearrangeCell;
+			productName = XYRearrangeCell;
+			productReference = 18A34B061DD1BDD600973CEE /* XYRearrangeCell.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		18A34AFE1DD1BDD600973CEE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = com.test.demo;
+				TargetAttributes = {
+					18A34B051DD1BDD600973CEE = {
+						CreatedOnToolsVersion = 8.1;
+						DevelopmentTeam = P46TQQZ3AS;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 18A34B011DD1BDD600973CEE /* Build configuration list for PBXProject "XYRearrangeCell" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 18A34AFD1DD1BDD600973CEE;
+			productRefGroup = 18A34B071DD1BDD600973CEE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18A34B051DD1BDD600973CEE /* XYRearrangeCell */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		18A34B041DD1BDD600973CEE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18A34B721DD1D1A900973CEE /* XYRollViewCell.xib in Resources */,
+				18A34B161DD1BDD600973CEE /* Assets.xcassets in Resources */,
+				18A34B701DD1D1A900973CEE /* XYCollectionViewCell.xib in Resources */,
+				18A34B221DD1BE1A00973CEE /* LaunchScreen.storyboard in Resources */,
+				18A34B6E1DD1D1A900973CEE /* planGroup.plist in Resources */,
+				18A34B6F1DD1D1A900973CEE /* plans.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18A34B021DD1BDD600973CEE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18A34B6D1DD1D1A900973CEE /* AppDelegate.m in Sources */,
+				18A34B6A1DD1D1A900973CEE /* XYTabBarController.m in Sources */,
+				18A34B691DD1D1A900973CEE /* XYCollectionViewController.m in Sources */,
+				18A34B6C1DD1D1A900973CEE /* XYPlanItem.m in Sources */,
+				18A34B711DD1D1A900973CEE /* XYRollViewCell.m in Sources */,
+				18A34B4B1DD1BE2300973CEE /* UICollectionView+RollView.m in Sources */,
+				18A34B6B1DD1D1A900973CEE /* XYTableViewController.m in Sources */,
+				18A34B4C1DD1BE2300973CEE /* UITableView+RollView.m in Sources */,
+				18A34B4D1DD1BE2300973CEE /* UIView+RollView.m in Sources */,
+				18A34B671DD1D1A900973CEE /* XYCollectionViewCell.m in Sources */,
+				18A34B681DD1D1A900973CEE /* XYCollectionViewControlleC.m in Sources */,
+				18A34B0B1DD1BDD600973CEE /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		18A34B201DD1BE1A00973CEE /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				18A34B211DD1BE1A00973CEE /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		18A34B1B1DD1BDD600973CEE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		18A34B1C1DD1BDD600973CEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		18A34B1E1DD1BDD600973CEE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = P46TQQZ3AS;
+				INFOPLIST_FILE = XYRearrangeCell/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sey.XYRearrangeCell;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		18A34B1F1DD1BDD600973CEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = P46TQQZ3AS;
+				INFOPLIST_FILE = XYRearrangeCell/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.sey.XYRearrangeCell;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18A34B011DD1BDD600973CEE /* Build configuration list for PBXProject "XYRearrangeCell" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18A34B1B1DD1BDD600973CEE /* Debug */,
+				18A34B1C1DD1BDD600973CEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18A34B1D1DD1BDD600973CEE /* Build configuration list for PBXNativeTarget "XYRearrangeCell" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18A34B1E1DD1BDD600973CEE /* Debug */,
+				18A34B1F1DD1BDD600973CEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 18A34AFE1DD1BDD600973CEE /* Project object */;
+}
