@@ -1,7 +1,7 @@
 ## XYRearrangeCell
 * 非常简单的实现：拖动cell时对其重新排列位置
 
-![https://github.com/Ossey/XYRearrangeCell/blob/master/2016-11-08%2018_07_08.gif](https://github.com/Yesi-hoang/TaoBaoTopLine/blob/master/Gif/TaoBaoTopLineGif.gif)
+![https://github.com/Ossey/XYRearrangeCell/blob/master/2016-11-08%2018_07_08.gif](https://github.com/Ossey/XYRearrangeCell/commits/master/2016-11-08%2018_07_08.gif)
 
 
 
