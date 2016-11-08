@@ -1,7 +1,7 @@
 ## XYRearrangeCell
 * 非常简单的实现：拖动cell时对其重新排列位置
 
-![https://github.com/Ossey/XYRearrangeCell/blob/master/2016-11-08%2018_07_08.gif](https://github.com/Ossey/XYRearrangeCell/blob/master/2016-11-08%2018_07_08.gif)
+![image](https://github.com/Ossey/XYRearrangeCell/blob/master/2016-11-09%2000_03_21.gif)
 
 
 
@@ -51,5 +51,6 @@
 * 已实现普通的左滑删除)
 
 
+![image](https://github.com/Ossey/XYRearrangeCell/blob/master/2016-11-09%2000_06_42.gif)
 
 
