@@ -1,7 +1,7 @@
 //
 //  UICollectionView+RollView.m
 //  XYRrearrangeCell
-//  GitHub: https://github.com/Ossey/XYRearrangeCell
+//  
 //  Created by mofeini on 16/11/8.
 //  Copyright © 2016年 com.test.demo. All rights reserved.
 //
@@ -9,13 +9,14 @@
 #import "UICollectionView+RollView.h"
 #import <objc/runtime.h>
 
-char * const XYRollViewCScreenshotViewKey = "XYRollViewCScreenshotViewKey";
-char * const XYRollViewCOriginalIndexPathKey = "XYRollViewcOriginalIndexPathKey";
-char * const XYRollViewCRelocatedIndexPathKey = "XYRollViewCRelocatedIndexPathKey";
-char * const XYRollViewCAutoScrollTimerKey = "XYRollViewCAutoScrollTimerKey";
-char * const XYRollViewCFingerLocationKey = "XYRollViewCFingerLocationKey";
+
+char * const XYRollViewCScreenshotViewKey      = "XYRollViewCScreenshotViewKey";
+char * const XYRollViewCOriginalIndexPathKey   = "XYRollViewcOriginalIndexPathKey";
+char * const XYRollViewCRelocatedIndexPathKey  = "XYRollViewCRelocatedIndexPathKey";
+char * const XYRollViewCAutoScrollTimerKey     = "XYRollViewCAutoScrollTimerKey";
+char * const XYRollViewCFingerLocationKey      = "XYRollViewCFingerLocationKey";
 char * const XYRollViewCAutoScrollDirectionKey = "XYRollViewCAutoScrollDirectionKey";
-char * const XYRollViewCCellAutoRollSpeedKey = "XYRollViewCCellAutoRollSpeedKey";
+char * const XYRollViewCAutoRollCellSpeedKey   = "XYRollViewCAutoRollCellSpeedKey";
 
 
 typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
@@ -84,11 +85,11 @@ typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
     return [objc_getAssociatedObject(self, XYRollViewCAutoScrollDirectionKey) integerValue];;
 }
 
-- (void)setCellAutoRollSpeed:(CGFloat)cellAutoRollSpeed {
-    objc_setAssociatedObject(self, XYRollViewCCellAutoRollSpeedKey, @(cellAutoRollSpeed), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setAutoRollCellSpeed:(CGFloat)autoRollCellSpeed {
+    objc_setAssociatedObject(self, XYRollViewCAutoRollCellSpeedKey, @(autoRollCellSpeed), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (CGFloat)cellAutoRollSpeed {
-    return [objc_getAssociatedObject(self, XYRollViewCCellAutoRollSpeedKey) doubleValue];
+- (CGFloat)autoRollCellSpeed {
+    return [objc_getAssociatedObject(self, XYRollViewCAutoRollCellSpeedKey) doubleValue];
 }
 
 - (void)setLongPressGesture {
@@ -98,23 +99,30 @@ typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
 
 // 编译器指令来屏蔽Xcode编译提醒/指定初始化器问题
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
-- (instancetype)initWithOriginalDataBlock:(XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(XYRollNewDataBlock)newDataBlock {
+- (nonnull instancetype)initWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock {
 
     [self setLongPressGesture];
 
     return self;
 }
 
++ (nonnull instancetype)xy_collectionViewLayout:(nonnull UICollectionViewLayout *)layout originalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock {
 
-//- (nonnull instancetype)initWithcollectionView:(nonnull UICollectionViewLayout *)layout LayoutOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock {
-//    
-//    if (self = [self initWithFrame:CGRectZero collectionViewLayout:layout]) {
-//        
-//        [self setLongPressGesture];
-//    }
-//    
-//    return self;
-//}
+    return [[UICollectionView alloc] initWitCollectionViewLayout:layout originalDataBlock:originalDataBlock callBlckNewDataBlock:newDataBlock];
+    
+}
+
+- (nonnull instancetype)initWitCollectionViewLayout:(nonnull UICollectionViewLayout *)layout originalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock {
+
+    if (self = [self initWithFrame:self.superview.bounds collectionViewLayout:layout]) {
+        [self setLongPressGesture];
+        
+        self.originalDataBlock = originalDataBlock;
+        self.newDataBlock = newDataBlock;
+    }
+    return self;
+}
+
 
 #pragma mark - 触发手势的事件
 - (void)longPressGestureRecognized:(UILongPressGestureRecognizer *)longPress{
@@ -163,7 +171,6 @@ typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
 }
 
 #pragma mark - 定时器
-
 // 创建定时器并运行
 - (void)startAutoScrollTimer {
     if (!self.autoScrollTimer) {
@@ -182,7 +189,7 @@ typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
 }
 
 
-#pragma mark - Private methods
+#pragma mark - 更新数据
 // 修改数据后回调给外界，外界更新数据
 - (void)updateDataSource{
     //通过originalDataBlock获得原始的数据
@@ -239,9 +246,8 @@ typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
     // 更新cell的原始indexPath为当前indexPath
     self.originalIndexPath = indexPath;
 }
-/**
- *  拖拽结束，显示cell，并移除截图
- */
+
+// 拖拽结束，显示cell，并移除截图
 - (void)didEndDraging{
     UICollectionViewCell *cell = [self cellForItemAtIndexPath:self.originalIndexPath];
     cell.hidden = NO;
@@ -261,10 +267,7 @@ typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
 }
 
 
-
-/**
- *  检查截图是否到达边缘，并作出响应
- */
+// 检查截图是否到达边缘，并作出响应
 - (BOOL)checkIfscreenshotViewMeetsEdge{
     
     NSLog(@"%ld", self.autoScrollDirection);
@@ -292,55 +295,53 @@ typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
     self.autoScrollDirection = XYRollViewScreenshotMeetsEdgeNone;
     return NO;
 }
-/**
- *  开始自动滚动
- */
+
+// 开始自动滚动
 - (void)startAutoScroll {
     
-    
     // 设置自动滚动速度
-    if (self.cellAutoRollSpeed == 0.0) {
-        self.cellAutoRollSpeed = 5.0;
+    if (self.autoRollCellSpeed == 0.0) {
+        self.autoRollCellSpeed = 5.0;
+    } else if (self.autoRollCellSpeed > 15) {
+        self.autoRollCellSpeed = 15;
     }
-    CGFloat cellAutoRollSpeed = self.cellAutoRollSpeed; // 滚动速度，数值越大滚动越快
+    CGFloat autoRollCellSpeed = self.autoRollCellSpeed; // 滚动速度，数值越大滚动越快
     
     if (self.autoScrollDirection == XYRollViewScreenshotMeetsEdgeTop) {//向上滚动
         //向上滚动最大范围限制
         if (self.contentOffset.y > 0) {
             
-            self.contentOffset = CGPointMake(0, self.contentOffset.y - cellAutoRollSpeed);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y - cellAutoRollSpeed);
+            self.contentOffset = CGPointMake(0, self.contentOffset.y - autoRollCellSpeed);
+            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y - autoRollCellSpeed);
         }
         return;
     } else if (self.autoScrollDirection == XYRollViewScreenshotMeetsEdgeBottom) { // 向下滚动
         //向下滚动最大范围限制
         if (self.contentOffset.y + self.bounds.size.height < self.contentSize.height) {
             
-            self.contentOffset = CGPointMake(0, self.contentOffset.y + cellAutoRollSpeed);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y + cellAutoRollSpeed);
+            self.contentOffset = CGPointMake(0, self.contentOffset.y + autoRollCellSpeed);
+            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y + autoRollCellSpeed);
         }
         return;
     } else if (self.autoScrollDirection == XYRollViewScreenshotMeetsEdgeLeft) {
         // 向左滚动滚动的最大范围限制
         if (self.contentOffset.x > 0) {
-            self.contentOffset = CGPointMake(self.contentOffset.x - cellAutoRollSpeed, 0);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x - cellAutoRollSpeed, self.screenshotView.center.y);
+            self.contentOffset = CGPointMake(self.contentOffset.x - autoRollCellSpeed, 0);
+            self.screenshotView.center = CGPointMake(self.screenshotView.center.x - autoRollCellSpeed, self.screenshotView.center.y);
         }
         return;
     } else if (self.autoScrollDirection == XYRollViewScreenshotMeetsEdgeRight) {
         
         // 向右滚动滚动的最大范围限制
         if (self.contentOffset.x + self.bounds.size.width < self.contentSize.width) {
-            self.contentOffset = CGPointMake(self.contentOffset.x + cellAutoRollSpeed, self.contentOffset.y);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x + cellAutoRollSpeed, self.screenshotView.center.y);
+            self.contentOffset = CGPointMake(self.contentOffset.x + autoRollCellSpeed, self.contentOffset.y);
+            self.screenshotView.center = CGPointMake(self.screenshotView.center.x + autoRollCellSpeed, self.screenshotView.center.y);
         }
         return;
     }
     
 #warning mark
-    /*
-     当把截图拖动到边缘，开始自动滚动，如果这时手指完全不动，则不会触发‘UIGestureRecognizerStateChanged’，对应的代码就不会执行，导致虽然截图在tableView中的位置变了，但并没有移动那个隐藏的cell，用下面代码可解决此问题，cell会随着截图的移动而移动
-     */
+    //  当把截图拖动到边缘自动滚动,手指不动手时，手动触发
     self.relocatedIndexPath = [self indexPathForItemAtPoint:self.screenshotView.center];
     if (self.relocatedIndexPath && ![self.relocatedIndexPath isEqual:self.originalIndexPath]) {
         [self cellRelocatedToNewIndexPath:self.relocatedIndexPath];

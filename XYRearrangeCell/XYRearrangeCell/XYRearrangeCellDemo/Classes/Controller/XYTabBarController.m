@@ -10,6 +10,7 @@
 #import "XYTableViewController.h"
 #import "XYCollectionViewController.h"
 #import "XYCollectionViewControlleC.h"
+#import "XYViewController.h"
 
 @interface XYTabBarController ()
 
@@ -39,19 +40,26 @@
     
     XYTableViewController *vc1 = [XYTableViewController new];
     UINavigationController *nav1 = [[UINavigationController alloc] initWithRootViewController:vc1];
-    nav1.tabBarItem.title = @"完成的事件";
+    nav1.tabBarItem.title = @"完成";
     
     [self addChildViewController:nav1];
     
     XYCollectionViewController *vc2 = [XYCollectionViewController new];
     UINavigationController *nav2 = [[UINavigationController alloc] initWithRootViewController:vc2];
-    nav2.tabBarItem.title = @"待完成事件";
+    nav2.tabBarItem.title = @"待完";
     [self addChildViewController:nav2];
     
     XYCollectionViewControlleC *vc3 = [XYCollectionViewControlleC new];
     UINavigationController *nav3 = [[UINavigationController alloc] initWithRootViewController:vc3];
-    nav3.tabBarItem.title = @"计划的事件";
+    nav3.tabBarItem.title = @"计划";
     [self addChildViewController:nav3];
+    
+    XYViewController *vc4 = [XYViewController new];
+    UINavigationController *nav4 = [[UINavigationController alloc] initWithRootViewController:vc4];
+    nav4.tabBarItem.title = @"事件";
+    [self addChildViewController:nav4];
+    
+    
 }
 
 

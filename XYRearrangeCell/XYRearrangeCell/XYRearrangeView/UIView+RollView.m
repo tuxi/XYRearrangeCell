@@ -1,13 +1,14 @@
 //
 //  UIView+XYRollView.m
 //  XYRrearrangeCell
-//  GitHub: https://github.com/Ossey/XYRearrangeCell
+//  
 //  Created by mofeini on 16/11/7.
 //  Copyright © 2016年 com.test.demo. All rights reserved.
 //
 
 #import "UIView+RollView.h"
 #import <objc/runtime.h>
+
 
 char * const XYRollViewNewDataBlockKey = "XYRollViewNewDataBlockKey";
 char * const XYRollViewOriginalDataBlockKey = "XYRollViewOriginalDataBlockKey";
@@ -53,16 +54,16 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
 
 
 #pragma mark - 快速创建
-+ (instancetype)xy_rollView {
++ (nonnull instancetype)xy_rollView {
     
     return [self xy_rollViewWithOriginalDataBlock:nil callBlckNewDataBlock:nil];
 }
-+ (instancetype)xy_rollViewWithOriginalDataBlock:(XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(XYRollNewDataBlock)newDataBlock {
++ (nonnull instancetype)xy_rollViewWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock {
     
     return [[self alloc] initWithOriginalDataBlock:originalDataBlock callBlckNewDataBlock:newDataBlock];
 }
 
-- (void)xy_rollViewOriginalDataBlock:(XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(XYRollNewDataBlock)newDataBlock {
+- (void)xy_rollViewOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock {
     if (self == [self initWithOriginalDataBlock:originalDataBlock callBlckNewDataBlock:newDataBlock]) {
         self.originalDataBlock = originalDataBlock;
         self.newDataBlock = newDataBlock;
@@ -72,7 +73,7 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
 
 }
 
-- (instancetype)initWithOriginalDataBlock:(XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(XYRollNewDataBlock)newDataBlock {
+- (nonnull instancetype)initWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock {
     
     if (self = [self init]) {
         
@@ -84,7 +85,7 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
 }
 
 #pragma mark - 返回一个给定view的截图
-- (UIView *)xy_customScreenshotViewFromView:(UIView *)inputView {
+- (nonnull UIView *)xy_customScreenshotViewFromView:(nonnull UIView *)inputView {
     
     // 开启图形上下文
     UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
@@ -118,7 +119,7 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
  *  fromIndex 从这个index
  *  toIndex   移至这个index
  */
-- (void)xy_moveObjectInMutableArray:(NSMutableArray *)array fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
+- (void)xy_moveObjectInMutableArray:(nonnull NSMutableArray *)array fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
     if (fromIndex < toIndex) {
         for (NSInteger i = fromIndex; i < toIndex; i++) {
             [array exchangeObjectAtIndex:i withObjectAtIndex:i + 1];
@@ -135,7 +136,7 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
  *  array 需要被检测的数组
  *  返回YES则表示是嵌套数组
  */
-- (BOOL)xy_nestedArrayCheck:(NSArray *)array {
+- (BOOL)xy_nestedArrayCheck:(nonnull NSArray *)array {
     for (id obj in array) {
         if ([obj isKindOfClass:[NSArray class]]) {
             return YES;

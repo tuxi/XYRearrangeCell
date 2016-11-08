@@ -11,9 +11,6 @@
 #import "XYCollectionViewCell.h"
 #import "UICollectionView+RollView.h"
 
-#define xColorWithRGB(r, g, b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
-#define xRandomColor xColorWithRGB(arc4random_uniform(256), arc4random_uniform(256), arc4random_uniform(256))
-
 @interface XYCollectionViewController ()
 
 @property (nonatomic, strong) NSMutableArray *plans;
@@ -40,7 +37,7 @@
 
     if (_flowLayout == nil) {
         UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
-        CGFloat itemW = 80;//[UIScreen mainScreen].bounds.size.width;
+        CGFloat itemW = 105;//[UIScreen mainScreen].bounds.size.width;
         CGFloat itemH = 100;
         flowLayout.itemSize = CGSizeMake(itemW, itemH);
         flowLayout.minimumLineSpacing = 0;
@@ -75,21 +72,23 @@ static NSString * const reuseIdentifier = @"Cell";
     [self.collectionView xy_rollViewOriginalDataBlock:^NSArray *{
         return weak_self.plans;
     } callBlckNewDataBlock:^(NSArray *newData) {
-#warning mark 未完成功能 || 点击取消按钮时恢复原始数据的排序
-        /**
-         思路:
-         1.由于数组是有序的，在回调给当前控制器新数据前，先把plans原始数据缓存起来，在将内部处理好的新数据赋值给plans
-         2.当点击取消按钮时，将新的plans数据全部移除，将临时的tempPlans全部添加到plans中
-         未实现
-         */
         self.tempPlans = [weak_self.plans copy];
         [weak_self.plans removeAllObjects];
         [weak_self.plans addObjectsFromArray:newData];
     }];
+    
+    self.collectionView.autoRollCellSpeed = 20;
 
 }
 
-#pragma mark - event 
+#warning mark 未完成功能 || 点击取消按钮时恢复原始数据的排序
+/**
+ 思路:
+ 1.由于数组是有序的，在回调给当前控制器新数据前，先把plans原始数据缓存起来，在将内部处理好的新数据赋值给plans
+ 2.当点击取消按钮时，将新的plans数据全部移除，将临时的tempPlans全部添加到plans中
+ 未实现
+ */
+#pragma mark - event
 - (void)cancleBtnClick {
 
     NSLog(@"plans--%@, tempPlans--%@", self.plans, self.tempPlans);

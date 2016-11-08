@@ -1,7 +1,7 @@
 //
 //  UITableView+RollViewTableView.m
 //  XYRrearrangeCell
-//  GitHub: https://github.com/Ossey/XYRearrangeCell
+//  
 //  Created by mofeini on 16/11/8.
 //  Copyright © 2016年 com.test.demo. All rights reserved.
 //
@@ -246,9 +246,8 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
 }
 
 
-/**
- *  cell被长按手指选中，对其进行截图，原cell隐藏
- */
+
+// cell被长按手指选中，对其进行截图，原cell隐藏
 - (void)cellSelectedAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [self cellForRowAtIndexPath:indexPath];
     UIView *screenshotView = [self xy_customScreenshotViewFromView:cell];

@@ -1,7 +1,7 @@
 //
 //  UIView+XYRollView.h
 //  XYRrearrangeCell
-//  GitHub: https://github.com/Ossey/XYRearrangeCell
+//  
 //  Created by mofeini on 16/11/7.
 //  Copyright © 2016年 com.test.demo. All rights reserved.
 //
@@ -41,21 +41,21 @@ typedef NSArray *(^XYRollOriginalDataBlock)();
  return:           XYRollView
  注意:外界的数据类型如果是数组中嵌套数据的，需要将嵌套的数组转换为可变数组添加到大数组中，不然当前方法对外界的数组进入重排列时会报错
  */
-+ (instancetype)xy_rollViewWithOriginalDataBlock:(XYRollOriginalDataBlock)originalDataBlock
-                         callBlckNewDataBlock:(XYRollNewDataBlock)newDataBlock;
++ (nonnull instancetype)xy_rollViewWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
+                         callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock;
 
-- (instancetype)initWithOriginalDataBlock:(XYRollOriginalDataBlock)originalDataBlock
-                     callBlckNewDataBlock:(XYRollNewDataBlock)newDataBlock;
+- (nonnull instancetype)initWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
+                     callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock;
 
-+ (instancetype)xy_rollView;
++ (nonnull instancetype)xy_rollView;
 
-- (void)xy_rollViewOriginalDataBlock:(XYRollOriginalDataBlock)originalDataBlock
-                callBlckNewDataBlock:(XYRollNewDataBlock)newDataBlock;
+- (void)xy_rollViewOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
+                callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock;
 
 /** 
  返回一个给定view的截图
  */
-- (UIView *)xy_customScreenshotViewFromView:(UIView *)inputView;
+- (nonnull UIView *)xy_customScreenshotViewFromView:(nonnull UIView *)inputView;
 
 /**
  *  将可变数组中的一个对象移动到该数组中的另外一个位置
@@ -63,13 +63,13 @@ typedef NSArray *(^XYRollOriginalDataBlock)();
  *  fromIndex 从这个index
  *  toIndex   移至这个index
  */
-- (void)xy_moveObjectInMutableArray:(NSMutableArray *)array fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
+- (void)xy_moveObjectInMutableArray:(nonnull NSMutableArray *)array fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
 
 /**
  *  检查数组是否为嵌套数组
  *  array 需要被检测的数组
  *  返回YES则表示是嵌套数组
  */
-- (BOOL)xy_nestedArrayCheck:(NSArray *)array;
+- (BOOL)xy_nestedArrayCheck:(nonnull NSArray *)array;
 
 @end
