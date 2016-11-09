@@ -7,7 +7,7 @@
 //
 
 #import "XYViewController.h"
-#import "XYRearrangeCell.h"
+#import "XYRearrangeView.h"
 #import "XYPlanItem.h"
 #import "XYCollectionViewCell.h"
 

@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-typedef void(^XYRollNewDataBlock)(NSArray *newData);
-typedef NSArray *(^XYRollOriginalDataBlock)();
+typedef void(^XYRollNewDataBlock)(NSArray * __nullable newData);
+typedef NSArray *__nonnull(^XYRollOriginalDataBlock)();
 
 @interface UIView (RollView)
 
@@ -16,18 +16,18 @@ typedef NSArray *(^XYRollOriginalDataBlock)();
  回调重新排列的数据给外界
  作用:外界拿到新的数据后，更新数据源，刷新表格即可展示
  */
-@property XYRollNewDataBlock newDataBlock;
+@property __nullable XYRollNewDataBlock newDataBlock;
 
 /**
  返回外界的数据给当前类
  作用:在移动cell数据发生改变时，拿到外界的数据重新排列数据
  */
-@property XYRollOriginalDataBlock originalDataBlock;
+@property XYRollOriginalDataBlock  __nullable originalDataBlock;
 
 /**
  cell在滚动时的阴影颜色,默认为黑色
  */
-@property UIColor *rollingColor;
+@property UIColor * __nullable rollingColor;
 /**
  cell在滚动时的阴影的不透明度,默认为0.3
  注意:如果要设置临界点的值，比如0，请设置0.01，因为只要传0时，就默认设置为0.3了
@@ -55,7 +55,7 @@ typedef NSArray *(^XYRollOriginalDataBlock)();
 /** 
  返回一个给定view的截图
  */
-- (nonnull UIView *)xy_customScreenshotViewFromView:(nonnull UIView *)inputView;
+- (__kindof UIView * __nonnull)xy_customScreenshotViewFromView:(__kindof UIView * __nullable)inputView;
 
 /**
  *  将可变数组中的一个对象移动到该数组中的另外一个位置

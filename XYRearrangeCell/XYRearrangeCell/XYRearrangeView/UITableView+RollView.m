@@ -15,8 +15,8 @@ char * const XYRollViewRelocatedIndexPathKey = "XYRollViewRelocatedIndexPathKey"
 char * const XYRollViewAutoScrollTimerKey = "XYRollViewAutoScrollTimerKey";
 char * const XYRollViewFingerLocationKey = "XYRollViewFingerLocationKey";
 char * const XYRollViewAutoScrollDirectionKey = "XYRollViewAutoScrollDirectionKey";
-char * const XYRollViewCellAutoRollSpeedKey = "XYRollViewCellAutoRollSpeedKey";
-
+char * const XYRollViewAutoRollCellSpeedKey   = "XYRollViewAutoRollCellSpeedKey";
+char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 
 typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
     XYRollTableViewScreenshotMeetsEdgeTop = 0,      // 选中cell的截图到达屏幕的顶部
@@ -29,6 +29,7 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
 @property CADisplayLink *autoScrollTimer; /** cell被拖动到边缘后开启，tableview自动向上或向下滚动 */
 @property CGPoint fingerLocation; /** 记录手指所在的位置 */
 @property XYRollTableViewScreenshotMeetsEdge autoScrollDirection; /** 自动滚动的方向 */
+@property dispatch_group_t updateDataGroup;  /** 用于更新数据的gcd 组 */
 
 @end
 @implementation UITableView (RollViewTableView)
@@ -71,11 +72,15 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
     return CGPointFromString(str);
 }
 
-- (void)setCellAutoRollSpeed:(CGFloat)cellAutoRollSpeed {
-    objc_setAssociatedObject(self, XYRollViewCellAutoRollSpeedKey, @(cellAutoRollSpeed), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setAutoRollCellSpeed:(CGFloat)autoRollCellSpeed {
+    objc_setAssociatedObject(self, XYRollViewAutoRollCellSpeedKey, @(autoRollCellSpeed), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (CGFloat)cellAutoRollSpeed {
-    return [objc_getAssociatedObject(self, XYRollViewCellAutoRollSpeedKey) doubleValue];
+- (CGFloat)autoRollCellSpeed {
+    CGFloat autoRollCellSpeed = [objc_getAssociatedObject(self, XYRollViewAutoRollCellSpeedKey) doubleValue];
+    if (autoRollCellSpeed == 0.0) {
+        return 5.0;
+    }
+    return autoRollCellSpeed;
 }
 
 - (void)setAutoScrollDirection:(XYRollTableViewScreenshotMeetsEdge)autoScrollDirection {
@@ -85,6 +90,19 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
 - (XYRollTableViewScreenshotMeetsEdge)autoScrollDirection {
 
     return [objc_getAssociatedObject(self, XYRollViewAutoScrollDirectionKey) integerValue];;
+}
+
+- (void)setUpdateDataGroup:(dispatch_group_t)updateDataGroup {
+
+    objc_setAssociatedObject(self, XYRollViewUpdateDataGroupKey, updateDataGroup, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (dispatch_group_t)updateDataGroup {
+    dispatch_group_t group = (dispatch_group_t)objc_getAssociatedObject(self, XYRollViewUpdateDataGroupKey);
+    if (group == nil) {
+        group = dispatch_group_create();
+    }
+    return group;
 }
 
 - (void)setGestureRecognizer {
@@ -99,6 +117,9 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
     rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
     [self addGestureRecognizer:rightSwipe];
 }
+
+
+
 
 // 编译器指令来屏蔽Xcode编译提醒/指定初始化器问题
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
@@ -218,9 +239,10 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
 #pragma mark - 更新数据
 // 修改数据后回调给外界，外界更新数据
 - (void)updateData {
-    //通过originalDataBlock获得原始的数据
+    
     NSMutableArray *tempArray = [NSMutableArray array];
     if (self.originalDataBlock) {
+        //通过originalDataBlock获得原始的数据
         [tempArray addObjectsFromArray:self.originalDataBlock()];
     }
     //判断原始数据是否为嵌套数组
@@ -241,8 +263,9 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
     // 通过block将新数组回调给外界以更改数据源，
     if (self.newDataBlock) {
         self.newDataBlock(tempArray);
-//        [self reloadData];
     }
+    
+    
 }
 
 
@@ -320,19 +343,17 @@ typedef NS_ENUM(NSInteger, XYRollTableViewScreenshotMeetsEdge) {
 
 // 开始自动滚动
 - (void)startAutoScroll{
-    if (self.cellAutoRollSpeed == 0.0) {
-        self.cellAutoRollSpeed = 5.0;
-    }
-    CGFloat cellAutoRollSpeed = self.cellAutoRollSpeed; // 滚动速度，数值越大滚动越快
+
+    CGFloat autoRollCellSpeed = self.autoRollCellSpeed; // 滚动速度，数值越大滚动越快
     if (self.autoScrollDirection == XYRollTableViewScreenshotMeetsEdgeTop) {//向下滚动
         if (self.contentOffset.y > 0) {//向下滚动最大范围限制
-            [self setContentOffset:CGPointMake(0, self.contentOffset.y - cellAutoRollSpeed)];
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y - cellAutoRollSpeed);
+            [self setContentOffset:CGPointMake(0, self.contentOffset.y - autoRollCellSpeed)];
+            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y - autoRollCellSpeed);
         }
     }else {                                               //向上滚动
         if (self.contentOffset.y + self.bounds.size.height < self.contentSize.height) {//向下滚动最大范围限制
-            [self setContentOffset:CGPointMake(0, self.contentOffset.y + cellAutoRollSpeed)];
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y + cellAutoRollSpeed);
+            [self setContentOffset:CGPointMake(0, self.contentOffset.y + autoRollCellSpeed)];
+            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y + autoRollCellSpeed);
         }
     }
     

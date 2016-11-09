@@ -42,14 +42,22 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
     objc_setAssociatedObject(self, XYRollViewRollingColorKey, rollingColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 - (UIColor *)rollingColor {
-    return objc_getAssociatedObject(self, XYRollViewRollingColorKey);
+    UIColor *rollingColor = objc_getAssociatedObject(self, XYRollViewRollingColorKey);
+    if (rollingColor == nil) {
+        return [UIColor blackColor];
+    }
+    return rollingColor;
 }
 
 - (void)setRollIngShadowOpacity:(CGFloat)rollIngShadowOpacity {
     objc_setAssociatedObject(self, XYRollViewRollIngShadowOpacityKey, @(rollIngShadowOpacity), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 - (CGFloat)rollIngShadowOpacity {
-    return [objc_getAssociatedObject(self, XYRollViewRollIngShadowOpacityKey) doubleValue];
+    CGFloat rollIngShadowOpacity= [objc_getAssociatedObject(self, XYRollViewRollIngShadowOpacityKey) doubleValue];
+    if (rollIngShadowOpacity == 0.0) {
+        return 0.3;
+    }
+    return rollIngShadowOpacity;
 }
 
 
@@ -85,7 +93,7 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
 }
 
 #pragma mark - 返回一个给定view的截图
-- (nonnull UIView *)xy_customScreenshotViewFromView:(nonnull UIView *)inputView {
+- (__kindof UIView * __nonnull)xy_customScreenshotViewFromView:(__kindof UIView * __nullable)inputView {
     
     // 开启图形上下文
     UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, NO, 0);
@@ -100,15 +108,8 @@ char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacity
     screenshotView.layer.cornerRadius = 0.0;
     screenshotView.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
     screenshotView.layer.shadowRadius = 5.0;
-    if (self.rollIngShadowOpacity == 0.0) {
-        self.rollIngShadowOpacity = 0.3;
-    }
     screenshotView.layer.shadowOpacity = self.rollIngShadowOpacity;
-    if (self.rollingColor == nil) {
-        self.rollingColor = [UIColor blackColor];
-    }
     screenshotView.layer.shadowColor = self.rollingColor.CGColor;
-    
     return screenshotView;
 }
 

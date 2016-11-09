@@ -60,7 +60,7 @@
 		18A34B641DD1D1A900973CEE /* XYRollViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYRollViewCell.h; sourceTree = "<group>"; };
 		18A34B651DD1D1A900973CEE /* XYRollViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYRollViewCell.m; sourceTree = "<group>"; };
 		18A34B661DD1D1A900973CEE /* XYRollViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XYRollViewCell.xib; sourceTree = "<group>"; };
-		18D1A20C1DD20CE600F1A74E /* XYRearrangeCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XYRearrangeCell.h; sourceTree = "<group>"; };
+		18D1A20C1DD20CE600F1A74E /* XYRearrangeView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XYRearrangeView.h; sourceTree = "<group>"; };
 		18D1A2101DD20F4C00F1A74E /* XYRearrangeCellExample.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XYRearrangeCellExample.pch; sourceTree = "<group>"; };
 		18D1A2111DD2110C00F1A74E /* XYViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYViewController.h; sourceTree = "<group>"; };
 		18D1A2121DD2110C00F1A74E /* XYViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYViewController.m; sourceTree = "<group>"; };
@@ -97,7 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				18A34B231DD1BE2300973CEE /* XYRearrangeCellExample */,
-				18A34B381DD1BE2300973CEE /* XYRearrangeCell */,
+				18A34B381DD1BE2300973CEE /* XYRearrangeView */,
 				18A34B151DD1BDD600973CEE /* Assets.xcassets */,
 				18A34B201DD1BE1A00973CEE /* LaunchScreen.storyboard */,
 				18A34B1A1DD1BDD600973CEE /* Info.plist */,
@@ -123,7 +123,7 @@
 			path = XYRearrangeCellDemo;
 			sourceTree = "<group>";
 		};
-		18A34B381DD1BE2300973CEE /* XYRearrangeCell */ = {
+		18A34B381DD1BE2300973CEE /* XYRearrangeView */ = {
 			isa = PBXGroup;
 			children = (
 				18A34B391DD1BE2300973CEE /* UICollectionView+RollView.h */,
@@ -132,9 +132,8 @@
 				18A34B3C1DD1BE2300973CEE /* UITableView+RollView.m */,
 				18A34B3D1DD1BE2300973CEE /* UIView+RollView.h */,
 				18A34B3E1DD1BE2300973CEE /* UIView+RollView.m */,
-				18D1A20C1DD20CE600F1A74E /* XYRearrangeCell.h */,
+				18D1A20C1DD20CE600F1A74E /* XYRearrangeView.h */,
 			);
-			name = XYRearrangeCell;
 			path = XYRearrangeView;
 			sourceTree = "<group>";
 		};

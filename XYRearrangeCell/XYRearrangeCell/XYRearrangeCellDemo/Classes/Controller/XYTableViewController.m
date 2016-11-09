@@ -9,7 +9,7 @@
 #import "XYTableViewController.h"
 #import "XYPlanItem.h"
 #import "XYRollViewCell.h"
-#import "XYRearrangeCell.h"
+#import "XYRearrangeView.h"
 
 @interface XYTableViewController ()
 
