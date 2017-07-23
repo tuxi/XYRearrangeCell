@@ -9,7 +9,7 @@
 #import "XYCollectionViewController.h"
 #import "XYPlanItem.h"
 #import "XYCollectionViewCell.h"
-#import "UICollectionView+RollView.h"
+#import "UIScrollView+RollView.h"
 
 @interface XYCollectionViewController ()
 
@@ -69,17 +69,19 @@ static NSString * const reuseIdentifier = @"Cell";
     self.collectionView.rollingColor = [UIColor blueColor];
     
     __weak typeof(self) weak_self = self;
-    [self.collectionView xy_rollViewOriginalDataBlock:^NSArray *{
+    [self.collectionView xy_rollViewWithOriginalDataBlock:^NSArray * _Nonnull{
         return weak_self.plans;
-    } callBlckNewDataBlock:^(NSArray *newData) {
+    } callBlckNewDataBlock:^(NSArray * _Nullable newData) {
         self.tempPlans = [weak_self.plans copy];
         [weak_self.plans removeAllObjects];
         [weak_self.plans addObjectsFromArray:newData];
     }];
     
+
     self.collectionView.autoRollCellSpeed = 20;
 
 }
+
 
 #warning mark 未完成功能 || 点击取消按钮时恢复原始数据的排序
 /**

@@ -9,7 +9,7 @@
 #import "XYCollectionViewControlleC.h"
 #import "XYPlanItem.h"
 #import "XYCollectionViewCell.h"
-#import "UICollectionView+RollView.h"
+#import "UIScrollView+RollView.h"
 
 @interface XYCollectionViewControlleC () <UICollectionViewDataSource>
 
@@ -78,7 +78,7 @@ static NSString * const reuseIdentifier = @"Cell";
     
     self.navigationItem.title = @"CollectionView";
 
-    [self.collectionView xy_rollViewOriginalDataBlock:^NSArray *{
+    [self.collectionView xy_rollViewWithOriginalDataBlock:^NSArray *{
         return self.plans;
     } callBlckNewDataBlock:^(NSArray *newData) {
         [self.plans removeAllObjects];

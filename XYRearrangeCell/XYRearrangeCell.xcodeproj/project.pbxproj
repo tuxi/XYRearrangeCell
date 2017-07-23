@@ -10,9 +10,7 @@
 		18A34B0B1DD1BDD600973CEE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B0A1DD1BDD600973CEE /* main.m */; };
 		18A34B161DD1BDD600973CEE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B151DD1BDD600973CEE /* Assets.xcassets */; };
 		18A34B221DD1BE1A00973CEE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18A34B201DD1BE1A00973CEE /* LaunchScreen.storyboard */; };
-		18A34B4B1DD1BE2300973CEE /* UICollectionView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B3A1DD1BE2300973CEE /* UICollectionView+RollView.m */; };
-		18A34B4C1DD1BE2300973CEE /* UITableView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B3C1DD1BE2300973CEE /* UITableView+RollView.m */; };
-		18A34B4D1DD1BE2300973CEE /* UIView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B3E1DD1BE2300973CEE /* UIView+RollView.m */; };
+		18A34B4D1DD1BE2300973CEE /* UIScrollView+RollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B3E1DD1BE2300973CEE /* UIScrollView+RollView.m */; };
 		18A34B671DD1D1A900973CEE /* XYCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B511DD1D1A900973CEE /* XYCollectionViewCell.m */; };
 		18A34B681DD1D1A900973CEE /* XYCollectionViewControlleC.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B531DD1D1A900973CEE /* XYCollectionViewControlleC.m */; };
 		18A34B691DD1D1A900973CEE /* XYCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A34B551DD1D1A900973CEE /* XYCollectionViewController.m */; };
@@ -34,12 +32,8 @@
 		18A34B151DD1BDD600973CEE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		18A34B1A1DD1BDD600973CEE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18A34B211DD1BE1A00973CEE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		18A34B391DD1BE2300973CEE /* UICollectionView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+RollView.h"; sourceTree = "<group>"; };
-		18A34B3A1DD1BE2300973CEE /* UICollectionView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+RollView.m"; sourceTree = "<group>"; };
-		18A34B3B1DD1BE2300973CEE /* UITableView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+RollView.h"; sourceTree = "<group>"; };
-		18A34B3C1DD1BE2300973CEE /* UITableView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+RollView.m"; sourceTree = "<group>"; };
-		18A34B3D1DD1BE2300973CEE /* UIView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+RollView.h"; sourceTree = "<group>"; };
-		18A34B3E1DD1BE2300973CEE /* UIView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+RollView.m"; sourceTree = "<group>"; };
+		18A34B3D1DD1BE2300973CEE /* UIScrollView+RollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+RollView.h"; sourceTree = "<group>"; };
+		18A34B3E1DD1BE2300973CEE /* UIScrollView+RollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+RollView.m"; sourceTree = "<group>"; };
 		18A34B501DD1D1A900973CEE /* XYCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCollectionViewCell.h; sourceTree = "<group>"; };
 		18A34B511DD1D1A900973CEE /* XYCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYCollectionViewCell.m; sourceTree = "<group>"; };
 		18A34B521DD1D1A900973CEE /* XYCollectionViewControlleC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYCollectionViewControlleC.h; sourceTree = "<group>"; };
@@ -60,7 +54,6 @@
 		18A34B641DD1D1A900973CEE /* XYRollViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYRollViewCell.h; sourceTree = "<group>"; };
 		18A34B651DD1D1A900973CEE /* XYRollViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYRollViewCell.m; sourceTree = "<group>"; };
 		18A34B661DD1D1A900973CEE /* XYRollViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = XYRollViewCell.xib; sourceTree = "<group>"; };
-		18D1A20C1DD20CE600F1A74E /* XYRearrangeView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XYRearrangeView.h; sourceTree = "<group>"; };
 		18D1A2101DD20F4C00F1A74E /* XYRearrangeCellExample.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XYRearrangeCellExample.pch; sourceTree = "<group>"; };
 		18D1A2111DD2110C00F1A74E /* XYViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XYViewController.h; sourceTree = "<group>"; };
 		18D1A2121DD2110C00F1A74E /* XYViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XYViewController.m; sourceTree = "<group>"; };
@@ -126,13 +119,8 @@
 		18A34B381DD1BE2300973CEE /* XYRearrangeView */ = {
 			isa = PBXGroup;
 			children = (
-				18A34B391DD1BE2300973CEE /* UICollectionView+RollView.h */,
-				18A34B3A1DD1BE2300973CEE /* UICollectionView+RollView.m */,
-				18A34B3B1DD1BE2300973CEE /* UITableView+RollView.h */,
-				18A34B3C1DD1BE2300973CEE /* UITableView+RollView.m */,
-				18A34B3D1DD1BE2300973CEE /* UIView+RollView.h */,
-				18A34B3E1DD1BE2300973CEE /* UIView+RollView.m */,
-				18D1A20C1DD20CE600F1A74E /* XYRearrangeView.h */,
+				18A34B3D1DD1BE2300973CEE /* UIScrollView+RollView.h */,
+				18A34B3E1DD1BE2300973CEE /* UIScrollView+RollView.m */,
 			);
 			path = XYRearrangeView;
 			sourceTree = "<group>";
@@ -281,10 +269,8 @@
 				18A34B691DD1D1A900973CEE /* XYCollectionViewController.m in Sources */,
 				18A34B6C1DD1D1A900973CEE /* XYPlanItem.m in Sources */,
 				18A34B711DD1D1A900973CEE /* XYRollViewCell.m in Sources */,
-				18A34B4B1DD1BE2300973CEE /* UICollectionView+RollView.m in Sources */,
 				18A34B6B1DD1D1A900973CEE /* XYTableViewController.m in Sources */,
-				18A34B4C1DD1BE2300973CEE /* UITableView+RollView.m in Sources */,
-				18A34B4D1DD1BE2300973CEE /* UIView+RollView.m in Sources */,
+				18A34B4D1DD1BE2300973CEE /* UIScrollView+RollView.m in Sources */,
 				18A34B671DD1D1A900973CEE /* XYCollectionViewCell.m in Sources */,
 				18A34B681DD1D1A900973CEE /* XYCollectionViewControlleC.m in Sources */,
 				18A34B0B1DD1BDD600973CEE /* main.m in Sources */,
@@ -403,7 +389,7 @@
 				INFOPLIST_FILE = XYRearrangeCell/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sey.XYRearrangeCell;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sey.XYRearrangeCell-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -418,7 +404,7 @@
 				INFOPLIST_FILE = XYRearrangeCell/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.sey.XYRearrangeCell;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.sey.XYRearrangeCell-";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

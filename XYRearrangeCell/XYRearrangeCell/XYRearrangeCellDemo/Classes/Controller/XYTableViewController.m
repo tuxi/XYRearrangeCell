@@ -8,8 +8,8 @@
 
 #import "XYTableViewController.h"
 #import "XYPlanItem.h"
+#import "UIScrollView+RollView.h"
 #import "XYRollViewCell.h"
-#import "XYRearrangeView.h"
 
 @interface XYTableViewController ()
 
@@ -35,7 +35,7 @@ static NSString * const identifier = @"identifier";
     
    
     
-    [self.tableView xy_rollViewOriginalDataBlock:^NSArray *{
+    [self.tableView xy_rollViewWithOriginalDataBlock:^NSArray *{
         return self.plans; // 返回当前的数据给tableView内部处理
     } callBlckNewDataBlock:^(NSArray *newData) {
         // 回调处理完成的数据给外界

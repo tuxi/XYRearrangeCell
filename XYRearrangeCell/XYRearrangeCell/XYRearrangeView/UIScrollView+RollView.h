@@ -7,10 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+
+
+typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
+    XYRollViewScreenshotMeetsEdgeNone = 0,     // 选中cell的截图没有到达父控件边缘
+    XYRollViewScreenshotMeetsEdgeTop,          // 选中cell的截图到达父控件顶部边缘
+    XYRollViewScreenshotMeetsEdgeBottom,       // 选中cell的截图到达父控件底部边缘
+    XYRollViewScreenshotMeetsEdgeLeft,         // 选中cell的截图到达父控件左侧边缘
+    XYRollViewScreenshotMeetsEdgeRight,        // 选中cell的截图到达父控件右侧边缘
+};
+
 typedef void(^XYRollNewDataBlock)(NSArray * __nullable newData);
 typedef NSArray *__nonnull(^XYRollOriginalDataBlock)();
 
-@interface UIView (RollView)
+@interface UIScrollView (RollView)
 
 /**
  回调重新排列的数据给外界
@@ -34,6 +44,12 @@ typedef NSArray *__nonnull(^XYRollOriginalDataBlock)();
  */
 @property CGFloat rollIngShadowOpacity;
 
+
+/**
+ cell拖拽到屏幕边缘时，其他cell的滚动速度，数值越大滚动越快，默认为5.0，注意临界点的值，如果要设置为0时，设置为0.01才有效,最大为15
+ */
+@property CGFloat autoRollCellSpeed;
+
 /**
  快速创建方法
  originalDataBlock:有返回值，返回外界的数据
@@ -41,21 +57,15 @@ typedef NSArray *__nonnull(^XYRollOriginalDataBlock)();
  return:           XYRollView
  注意:外界的数据类型如果是数组中嵌套数据的，需要将嵌套的数组转换为可变数组添加到大数组中，不然当前方法对外界的数组进入重排列时会报错
  */
-+ (nonnull instancetype)xy_rollViewWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
+- (void)xy_rollViewWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
                          callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock;
 
-- (nonnull instancetype)initWithOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
-                     callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock;
 
-+ (nonnull instancetype)xy_rollView;
-
-- (void)xy_rollViewOriginalDataBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
-                callBlckNewDataBlock:(nullable XYRollNewDataBlock)newDataBlock;
 
 /** 
  返回一个给定view的截图
  */
-- (__kindof UIView * __nonnull)xy_customScreenshotViewFromView:(__kindof UIView * __nullable)inputView;
+- (__kindof UIView * __nonnull)xy_customScreenshotViewFromView:(UIView * __nullable)inputView;
 
 /**
  *  将可变数组中的一个对象移动到该数组中的另外一个位置

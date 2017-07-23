@@ -7,9 +7,10 @@
 //
 
 #import "XYViewController.h"
-#import "XYRearrangeView.h"
 #import "XYPlanItem.h"
 #import "XYCollectionViewCell.h"
+#import "XYRollViewCell.h"
+#import "UIScrollView+RollView.h"
 
 @interface XYViewController () <UICollectionViewDataSource>
 @property (nonatomic, strong) NSMutableArray *plans;
@@ -34,17 +35,13 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 - (UICollectionView *)collectionView {
     if (_collectionView == nil) {
-        UICollectionView *collectionView = [UICollectionView xy_collectionViewLayout:self.flowLayout originalDataBlock:^NSArray *{
-            return self.plans;
-        } callBlckNewDataBlock:^(NSArray *newData) {
-            [self.plans removeAllObjects];
-            [self.plans addObjectsFromArray:newData];
-        }];
+        UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:self.flowLayout];
         
         collectionView.dataSource = self;
         self.collectionView = collectionView;
         [self.view addSubview:collectionView];
         _collectionView = collectionView;
+        
     }
     return _collectionView;
 }
@@ -69,7 +66,13 @@ static NSString * const reuseIdentifier = @"Cell";
     
     self.navigationItem.title = @"CollectionView";
     
-
+    [self.collectionView xy_rollViewWithOriginalDataBlock:^NSArray * _Nonnull{
+        return self.plans;
+    } callBlckNewDataBlock:^(NSArray * _Nullable newData) {
+        [self.plans removeAllObjects];
+        [self.plans addObjectsFromArray:newData];
+    }];
+    
 }
 
 
