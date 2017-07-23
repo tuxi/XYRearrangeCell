@@ -78,9 +78,9 @@ static NSString * const reuseIdentifier = @"Cell";
     
     self.navigationItem.title = @"CollectionView";
 
-    [self.collectionView xy_rollViewWithOriginalDataBlock:^NSArray *{
+    [self.collectionView xy_rollViewFormOriginalDataSourceBlock:^NSArray *{
         return self.plans;
-    } callBlckNewDataBlock:^(NSArray *newData) {
+    } newDataSourceBlock:^(NSArray *newData) {
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
     }];

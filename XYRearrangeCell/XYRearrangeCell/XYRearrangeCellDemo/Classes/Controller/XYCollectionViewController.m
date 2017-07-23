@@ -69,9 +69,9 @@ static NSString * const reuseIdentifier = @"Cell";
     self.collectionView.rollingColor = [UIColor blueColor];
     
     __weak typeof(self) weak_self = self;
-    [self.collectionView xy_rollViewWithOriginalDataBlock:^NSArray * _Nonnull{
+    [self.collectionView xy_rollViewFormOriginalDataSourceBlock:^NSArray * _Nonnull{
         return weak_self.plans;
-    } callBlckNewDataBlock:^(NSArray * _Nullable newData) {
+    } newDataSourceBlock:^(NSArray * _Nullable newData) {
         self.tempPlans = [weak_self.plans copy];
         [weak_self.plans removeAllObjects];
         [weak_self.plans addObjectsFromArray:newData];

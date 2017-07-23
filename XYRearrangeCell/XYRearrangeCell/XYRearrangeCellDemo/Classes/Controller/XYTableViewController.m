@@ -33,11 +33,11 @@ static NSString * const identifier = @"identifier";
     self.navigationItem.title = @"TableView";
     [self.tableView registerNib:[UINib nibWithNibName:@"XYRollViewCell" bundle:nil] forCellReuseIdentifier:identifier];
     
-   
+    self.tableView.rollingColor = [UIColor purpleColor];
     
-    [self.tableView xy_rollViewWithOriginalDataBlock:^NSArray *{
+    [self.tableView xy_rollViewFormOriginalDataSourceBlock:^NSArray *{
         return self.plans; // 返回当前的数据给tableView内部处理
-    } callBlckNewDataBlock:^(NSArray *newData) {
+    } newDataSourceBlock:^(NSArray *newData) {
         // 回调处理完成的数据给外界
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
@@ -59,7 +59,7 @@ static NSString * const identifier = @"identifier";
 #pragma mark - UITableViewDelegate, UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // 检测是不是嵌套数组
-    if ([tableView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         return self.plans.count;
     }
     
@@ -68,7 +68,7 @@ static NSString * const identifier = @"identifier";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
     // 检测是不是嵌套数组
-    if ([tableView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         NSArray *array = self.plans[section];
         return array.count;
     }
@@ -81,7 +81,7 @@ static NSString * const identifier = @"identifier";
  
     XYPlanItem *item = nil;
     // 检测是不是嵌套数组
-    if ([tableView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         item = self.plans[indexPath.section][indexPath.row];
     } else {
         item = self.plans[indexPath.row];
@@ -96,7 +96,7 @@ static NSString * const identifier = @"identifier";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     // 检测是不是嵌套数组
-    if ([tableView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         return 30;
     }
     return 0;
@@ -105,7 +105,7 @@ static NSString * const identifier = @"identifier";
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 
     // 检测是不是嵌套数组
-    if ([tableView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         return [NSString stringWithFormat:@"第%ld组事件", section + 1];
     }
         return nil;
@@ -159,6 +159,15 @@ static NSString * const identifier = @"identifier";
 
     [self setupPlansGroup];
     [self.tableView reloadData];
+}
+
+- (BOOL)nestedArrayCheck:(nonnull NSArray *)array {
+    for (id obj in array) {
+        if ([obj isKindOfClass:[NSArray class]]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

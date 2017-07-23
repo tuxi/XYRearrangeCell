@@ -66,9 +66,9 @@ static NSString * const reuseIdentifier = @"Cell";
     
     self.navigationItem.title = @"CollectionView";
     
-    [self.collectionView xy_rollViewWithOriginalDataBlock:^NSArray * _Nonnull{
+    [self.collectionView xy_rollViewFormOriginalDataSourceBlock:^NSArray * _Nonnull{
         return self.plans;
-    } callBlckNewDataBlock:^(NSArray * _Nullable newData) {
+    } newDataSourceBlock:^(NSArray * _Nullable newData) {
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
     }];
@@ -89,7 +89,7 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     // 判断是不是嵌套数组
-    if ([collectionView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         return self.plans.count;
     }
     return 1;
@@ -99,7 +99,7 @@ static NSString * const reuseIdentifier = @"Cell";
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
     // 判断是不是嵌套数组
-    if ([collectionView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         NSArray *array = self.plans[section];
         return array.count;
     }
@@ -112,7 +112,7 @@ static NSString * const reuseIdentifier = @"Cell";
     XYPlanItem *item = nil;
     
     // 检测是不是嵌套数组
-    if ([collectionView xy_nestedArrayCheck:self.plans]) {
+    if ([self nestedArrayCheck:self.plans]) {
         item = self.plans[indexPath.section][indexPath.item];
     } else {
         item = self.plans[indexPath.row];
@@ -122,6 +122,15 @@ static NSString * const reuseIdentifier = @"Cell";
     cell.backgroundColor = xRandomColor;
     
     return cell;
+}
+
+- (BOOL)nestedArrayCheck:(nonnull NSArray *)array {
+    for (id obj in array) {
+        if ([obj isKindOfClass:[NSArray class]]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 
