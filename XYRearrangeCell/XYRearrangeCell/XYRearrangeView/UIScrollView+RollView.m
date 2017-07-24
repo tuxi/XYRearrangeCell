@@ -373,23 +373,20 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
  *  fromIndex 从这个index
  *  toIndex   移至这个index
  */
-- (void)xy_moveObjectInMutableArray:(nonnull NSMutableArray *)array fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
+- (void)exchangeObjectInMutableArray:(nonnull NSMutableArray *)array fromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex {
+    NSParameterAssert([array isKindOfClass:[NSMutableArray class]]);
     if (fromIndex < toIndex) {
         for (NSInteger i = fromIndex; i < toIndex; i++) {
             [array exchangeObjectAtIndex:i withObjectAtIndex:i + 1];
         }
-    }else{
+    } else {
         for (NSInteger i = fromIndex; i > toIndex; i--) {
             [array exchangeObjectAtIndex:i withObjectAtIndex:i - 1];
         }
     }
 }
 
-/**
- *  检查数组是否为嵌套数组
- *  array 需要被检测的数组
- *  返回YES则表示是嵌套数组
- */
+/// 检查数组是否为嵌套数组
 - (BOOL)xy_nestedArrayCheck:(nonnull NSArray *)array {
     for (id obj in array) {
         if ([obj isKindOfClass:[NSArray class]]) {
@@ -436,9 +433,11 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
         [self.rollingTempArray addObjectsFromArray:self.originalDataBlock()];
     }
     //判断原始数据是否为嵌套数组
-    if ([self xy_nestedArrayCheck:self.rollingTempArray]) {//是嵌套数组
-        if (self.originalIndexPath.section == self.relocatedIndexPath.section) {//在同一个section内
-            [self xy_moveObjectInMutableArray:self.rollingTempArray[self.originalIndexPath.section] fromIndex:self.originalIndexPath.row toIndex:self.relocatedIndexPath.row];
+    if ([self xy_nestedArrayCheck:self.rollingTempArray]) {
+        //是嵌套数组
+        if (self.originalIndexPath.section == self.relocatedIndexPath.section) {
+            //在同一个section内
+            [self exchangeObjectInMutableArray:self.rollingTempArray[self.originalIndexPath.section] fromIndex:self.originalIndexPath.row toIndex:self.relocatedIndexPath.row];
         } else {
             //不在同一个section内
             // 容错处理：当外界的数组实际类型不是NSMutableArray时，将其转换为NSMutableArray
@@ -446,8 +445,9 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
             [self.rollingTempArray[self.relocatedIndexPath.section] insertObject:originalObj atIndex:self.relocatedIndexPath.item];
             [self.rollingTempArray[self.originalIndexPath.section] removeObjectAtIndex:self.originalIndexPath.item];
         }
-    } else {                                  //不是嵌套数组
-        [self xy_moveObjectInMutableArray:self.rollingTempArray fromIndex:self.originalIndexPath.row toIndex:self.relocatedIndexPath.row];
+    } else {
+        //不是嵌套数组
+        [self exchangeObjectInMutableArray:self.rollingTempArray fromIndex:self.originalIndexPath.row toIndex:self.relocatedIndexPath.row];
     }
     
     // 通过block将新数组回调给外界以更改数据源，
