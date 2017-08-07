@@ -83,13 +83,6 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 
 
-#warning mark 未完成功能 || 点击取消按钮时恢复原始数据的排序
-/**
- 思路:
- 1.由于数组是有序的，在回调给当前控制器新数据前，先把plans原始数据缓存起来，在将内部处理好的新数据赋值给plans
- 2.当点击取消按钮时，将新的plans数据全部移除，将临时的tempPlans全部添加到plans中
- 未实现
- */
 #pragma mark - event
 - (void)cancleBtnClick {
 
