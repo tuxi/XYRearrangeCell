@@ -36,7 +36,7 @@ typedef void(^XYRollingBlock)();
 /**
  @param originalDataBlock 源数据源
  @param newDataBlock     滚动完后的最终数据源，该block只会回调一次
- 注意:外界的数据类型如果是数组中嵌套数据的，需要将嵌套的数组转换为可变数组添加到大数组中，不然当前方法对外界的数组进入重排列时会报错
+ @discussion 外界的数据类型如果是数组中嵌套数据的，需要将嵌套的数组转换为可变数组添加到大数组中，不然当前方法对外界的数组进入重排列时会报错
  */
 - (void)xy_rollViewFormOriginalDataSourceBlock:(nullable XYRollOriginalDataBlock)originalDataBlock
                             newDataSourceBlock:(nullable XYRollNewDataBlock)newDataBlock;
