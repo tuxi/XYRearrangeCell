@@ -42,7 +42,7 @@ static NSString * const identifier = @"identifier";
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
     }];
-    self.tableView.rollDirection = XYRollViewScrollDirectionHorizontal;
+    self.tableView.rollDirection = XYRollViewScrollDirectionVertical;
     
     self.tableView.rowHeight = 60;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
