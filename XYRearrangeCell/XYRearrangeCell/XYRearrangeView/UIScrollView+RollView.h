@@ -2,20 +2,18 @@
 //  UIView+XYRollView.h
 //  XYRrearrangeCell
 //  
-//  Created by mofeini on 16/11/7.
-//  Copyright © 2016年 com.test.demo. All rights reserved.
+//  Created by Ossey on 16/11/7.
+//  Copyright © 2016年 Ossey. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, XYRollViewScreenshotMeetsEdge) {
-    XYRollViewScreenshotMeetsEdgeNone = 0,     // 选中cell的截图没有到达父控件边缘
-    XYRollViewScreenshotMeetsEdgeTop,          // 选中cell的截图到达父控件顶部边缘
-    XYRollViewScreenshotMeetsEdgeBottom,       // 选中cell的截图到达父控件底部边缘
-    XYRollViewScreenshotMeetsEdgeLeft,         // 选中cell的截图到达父控件左侧边缘
-    XYRollViewScreenshotMeetsEdgeRight,        // 选中cell的截图到达父控件右侧边缘
+typedef NS_ENUM(NSInteger, XYRollViewScrollDirection) {
+    XYRollViewScrollDirectionAll,
+    XYRollViewScrollDirectionVertical,
+    XYRollViewScrollDirectionHorizontal
 };
 
 typedef void(^XYRollNewDataBlock)(NSArray * __nullable newData);
@@ -32,6 +30,9 @@ typedef void(^XYRollingBlock)();
 
 /** cell拖拽到屏幕边缘时，其他cell的滚动速度，数值越大滚动越快，默认为5.0,最大为15 */
 @property (nonatomic, assign) CGFloat autoRollCellSpeed;
+
+/** cell拖拽时允许拖拽的方法 , 默认XYRollViewScrollDirectionAll*/
+@property (nonatomic, assign) XYRollViewScrollDirection rollDirection;
 
 /**
  @param originalDataBlock 源数据源

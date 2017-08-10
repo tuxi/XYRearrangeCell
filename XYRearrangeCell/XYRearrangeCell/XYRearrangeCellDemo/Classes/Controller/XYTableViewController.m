@@ -2,8 +2,8 @@
 //  XYTableViewController.m
 //  XYRrearrangeCell
 //
-//  Created by mofeini on 16/11/6.
-//  Copyright © 2016年 com.test.demo. All rights reserved.
+//  Created by Ossey on 16/11/6.
+//  Copyright © 2016年 Ossey. All rights reserved.
 //
 
 #import "XYTableViewController.h"
@@ -42,6 +42,8 @@ static NSString * const identifier = @"identifier";
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
     }];
+    self.tableView.rollDirection = XYRollViewScrollDirectionHorizontal;
+    
     self.tableView.rowHeight = 60;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rollingColor = [UIColor blackColor];
