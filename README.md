@@ -1,8 +1,7 @@
 ## XYRearrangeCell
 * 简单实现：拖动cell时对其重新排列位置(适用collectionView和tableView)
 
-![image](https://github.com/Ossey/XYRearrangeCell/blob/master/XYRearrangeCell/XYRearrangeCell/2016-11-09 00_03_21.gif)
-
+![image](https://github.com/Ossey/XYRearrangeCell/blob/master/XYRearrangeCell/XYRearrangeCell/2016-11-09%2000_03_21.gif)
 
 
 ## Features(特征) 
@@ -47,6 +46,6 @@
 ```
 
 
-![image](https://github.com/Ossey/XYRearrangeCell/blob/master/XYRearrangeCell/XYRearrangeCell/2016-11-09 00_06_42.gif)
+![image](https://github.com/Ossey/XYRearrangeCell/blob/master/XYRearrangeCell/XYRearrangeCell/2016-11-09%2000_06_42.gif)
 
 
