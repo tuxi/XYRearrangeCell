@@ -41,8 +41,10 @@ static NSString * const identifier = @"identifier";
         // 回调处理完成的数据给外界
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
+        // 更改完成后，根据情况确定是否刷新一次tableView
+//        [self.tableView reloadData];
     }];
-    self.tableView.rollDirection = XYRollViewScrollDirectionVertical;
+
     
     self.tableView.rowHeight = 60;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -89,7 +91,6 @@ static NSString * const identifier = @"identifier";
         item = self.plans[indexPath.row];
     }
     
-
     cell.item = item;
     return cell;
 }
@@ -101,14 +102,14 @@ static NSString * const identifier = @"identifier";
     if ([self nestedArrayCheck:self.plans]) {
         return 30;
     }
-    return 0;
+    return 0.1;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 
     // 检测是不是嵌套数组
     if ([self nestedArrayCheck:self.plans]) {
-        return [NSString stringWithFormat:@"第%ld组事件", section + 1];
+        return [NSString stringWithFormat:@"第%ld组", section + 1];
     }
         return nil;
 }

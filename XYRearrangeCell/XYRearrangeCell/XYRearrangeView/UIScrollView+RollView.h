@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, XYRollViewScrollDirection) {
-    XYRollViewScrollDirectionAll,
+    XYRollViewScrollDirectionNotKnow,
     XYRollViewScrollDirectionVertical,
     XYRollViewScrollDirectionHorizontal
 };
@@ -31,8 +31,8 @@ typedef void(^XYRollingBlock)();
 /** cell拖拽到屏幕边缘时，其他cell的滚动速度，数值越大滚动越快，默认为5.0,最大为15 */
 @property (nonatomic, assign) CGFloat autoRollCellSpeed;
 
-/** cell拖拽时允许拖拽的方法 , 默认XYRollViewScrollDirectionAll*/
-@property (nonatomic, assign) XYRollViewScrollDirection rollDirection;
+/** cell拖拽时允许拖拽的方向*/
+@property (nonatomic, assign, readonly) XYRollViewScrollDirection rollDirection;
 
 /**
  @param originalDataBlock 源数据源

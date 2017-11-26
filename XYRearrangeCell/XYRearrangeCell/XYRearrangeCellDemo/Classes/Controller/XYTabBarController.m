@@ -22,13 +22,12 @@
 {
     if (self == [XYTabBarController class]) {
         
-        UITabBarItem *tabBarItem = [UITabBarItem appearanceWhenContainedInInstancesOfClasses:@[self]];
-        [tabBarItem setTitleTextAttributes:@{
+        [[UITabBarItem appearance] setTitleTextAttributes:@{
                                              NSFontAttributeName:
                                                  [UIFont systemFontOfSize:18 weight:1],
                                              NSForegroundColorAttributeName: [UIColor brownColor]
                                              } forState:UIControlStateNormal];
-        [tabBarItem setTitleTextAttributes:@{
+        [[UITabBarItem appearance] setTitleTextAttributes:@{
                                              NSForegroundColorAttributeName:
                                                  [UIColor magentaColor]
                                              } forState:UIControlStateSelected];

@@ -9,12 +9,12 @@
 #import "UIScrollView+RollView.h"
 #import <objc/runtime.h>
 
-typedef NS_ENUM(NSInteger, XYRollViewAutoScrollDirection) {
-    XYRollViewAutoScrollDirectionNone = 0,     // 选中cell的截图没有到达父控件边缘
-    XYRollViewAutoScrollDirectionTop,          // 选中cell的截图到达父控件顶部边缘
-    XYRollViewAutoScrollDirectionBottom,       // 选中cell的截图到达父控件底部边缘
-    XYRollViewAutoScrollDirectionLeft,         // 选中cell的截图到达父控件左侧边缘
-    XYRollViewAutoScrollDirectionRight,        // 选中cell的截图到达父控件右侧边缘
+typedef NS_ENUM(NSInteger, XYRollViewautoScrollDirection) {
+    XYRollViewautoScrollDirectionNone = 0,     // 选中cell的截图没有到达父控件边缘
+    XYRollViewautoScrollDirectionTop,          // 选中cell的截图到达父控件顶部边缘
+    XYRollViewautoScrollDirectionBottom,       // 选中cell的截图到达父控件底部边缘
+    XYRollViewautoScrollDirectionLeft,         // 选中cell的截图到达父控件左侧边缘
+    XYRollViewautoScrollDirectionRight,        // 选中cell的截图到达父控件右侧边缘
 };
 
 
@@ -24,13 +24,23 @@ char * const XYRollViewRollingColorKey = "XYRollViewRollingColorKey";
 char * const XYRollViewRollIngShadowOpacityKey = "XYRollViewRollIngShadowOpacityKey";
 
 char * const XYRollViewScreenshotViewKey = "XYRollViewScreenshotViewKey";
-char * const XYRollViewOriginalIndexPathKey = "XYRollViewOriginalIndexPathKey";
-char * const XYRollViewRelocatedIndexPathKey = "XYRollViewRelocatedIndexPathKey";
-char * const XYRollViewAutoScrollTimerKey = "XYRollViewAutoScrollTimerKey";
-char * const XYRollViewFingerLocationKey = "XYRollViewFingerLocationKey";
-char * const XYRollViewAutoScrollDirectionKey = "XYRollViewAutoScrollDirectionKey";
+char * const XYRollViewBeginRollIndexPathKey = "XYRollViewBeginRollIndexPathKey";
+char * const XYRollViewNewRollIndexPathKey = "XYRollViewNewRollIndexPathKey";
+char * const XYRollViewDisplayLinkKey = "XYRollViewDisplayLinkKey";
+char * const XYRollViewautoScrollDirectionKey = "XYRollViewautoScrollDirectionKey";
 char * const XYRollViewAutoRollCellSpeedKey   = "XYRollViewAutoRollCellSpeedKey";
 char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
+char * const XYRollViewLastRollIndexPath = "XYRollViewLastRollIndexPath";
+
+#define XY_ROLLVIEW_SELF \
+UITableView *tableView = nil;\
+UICollectionView *collectionView = nil;\
+if ([self isKindOfClass:[UICollectionView class]]) {\
+    collectionView = (UICollectionView *)self;\
+}\
+else if ([self isKindOfClass:[UITableView class]]) {\
+    tableView = (UITableView *)self;\
+}
 
 @interface UIView (XYScreenShotExtend)
 
@@ -51,28 +61,30 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 - (BOOL)xy_isArrayInChildElement;
 /**
  *  将可变数组中的一个对象移动到该数组中的另外一个位置
- *  @param fromIndex 从这个index
- *  @param toIndex   移至这个index
+ *  @param fromIndex 开始的index
+ *  @param toIndex   目的index
  */
 - (void)exchangeObjectFromIndex:(NSInteger)fromIndex toIndex:(NSInteger)toIndex;
 @end
 
-@interface UIScrollView ()
+@interface UIScrollView () <UIGestureRecognizerDelegate>
 
 /** 对被选中的cell的截图 */
-@property (nonatomic, strong) UIView *screenshotView;
-/** 被选中的cell的原始位置 */
-@property (nonatomic, strong) NSIndexPath *originalIndexPath;
-/** 被选中的cell的新位置 */
-@property (nonatomic, strong) NSIndexPath *relocatedIndexPath;
+@property (nonatomic, strong) UIView *xy_screenshotView;
+/** 被选中的cell的原始位置，这个值是手机开始拖动cell时记录的原始值，只有下次开始拖动时才会被更改 */
+@property (nonatomic, strong) NSIndexPath *beginRollIndexPath;
+/** 开始移动的起始位置，这个值会随时改变 */
+@property (nonatomic, strong) NSIndexPath *lastRollIndexPath;
+/** 记录被选中的cell的新位置，手指移动时会从lastRollIndexPath移动到xy_newRollIndexPath */
+@property (nonatomic, strong) NSIndexPath *xy_newRollIndexPath;
 /** cell被拖动到边缘后开启，tableview自动向上或向下滚动 */
-@property (nonatomic, strong) CADisplayLink *autoScrollTimer;
+@property (nonatomic, strong) CADisplayLink *xy_displayLink;
  /** 记录手指所在的位置 */
-@property (nonatomic, assign) CGPoint fingerLocation;
+@property (nonatomic, assign) CGPoint xy_fingerPosition;
 /** 自动滚动的方向 */
-@property (nonatomic, assign) XYRollViewAutoScrollDirection autoScrollDirection;
+@property (nonatomic, assign) XYRollViewautoScrollDirection xy_autoScrollDirection;
 /** 长按cell时触发的手势 */
-@property (nonatomic, strong) UILongPressGestureRecognizer *longPress;
+@property (nonatomic, strong, readonly) UILongPressGestureRecognizer *xy_longPress;
 /** cell 在滚动交换时发送改变的临时数组 */
 @property (nonatomic, strong) NSMutableArray *rollingTempArray;
 /** 回调重新排列的数据给外界 作用:外界拿到新的数据后，更新数据源，刷新表格即可展示 */
@@ -109,7 +121,7 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     self.originalDataBlock = originalDataBlock;
     self.newDataBlock = newDataBlock;
     self.rollingBlock = rollingBlock;
-    [self longPress];
+    [self xy_longPress];
 
 }
 
@@ -117,102 +129,101 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 #pragma mark - Events
 ////////////////////////////////////////////////////////////////////////
 
-- (void)longPressGestureRecognized:(UILongPressGestureRecognizer *)longPress {
-    @autoreleasepool {
-        if (![self isKindOfClass:[UITableView class]] &&
-            ![UICollectionView class]) {
-            return;
-        }
-        
-        UIGestureRecognizerState state = longPress.state;
-        // 获取手指在rollView上的坐标
-        self.fingerLocation = [longPress locationInView:self];
-        // 手指按住位置对应的indexPath，可能为nil
-        UITableView *tableView = nil;
-        UICollectionView *collectionView = nil;
-        if ([self isKindOfClass:[UICollectionView class]]) {
-            collectionView = (UICollectionView *)self;
-        }
-        else if ([self isKindOfClass:[UITableView class]]) {
-            tableView = (UITableView *)self;
-        }
-        self.relocatedIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.fingerLocation] : [collectionView indexPathForItemAtPoint:self.fingerLocation];
-        
-        if (state == UIGestureRecognizerStateBegan) {
-            // 获取originalIndexPath，注意容错处理，因为可能为nil
-            self.originalIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.fingerLocation] : [collectionView indexPathForItemAtPoint:self.fingerLocation];
-            if (self.originalIndexPath) {
-                //手势开始，对被选中cell截图，隐藏原cell
-                [self cellSelectedAtIndexPath:self.originalIndexPath];
-            }
-            
-        }
-        else if (state == UIGestureRecognizerStateChanged) {
-            // 长按手势开始移动，判断手指按住位置是否进入其它indexPath范围，若进入则更新数据源并移动cell
-            // 截图跟随手指移动
-            [UIView animateWithDuration:0.1 animations:^{
-                CGPoint targetCenter = self.fingerLocation;
-                switch (self.rollDirection) {
-                    case XYRollViewScrollDirectionAll: {
-                    } break;
-                    case XYRollViewScrollDirectionHorizontal: {
-                        targetCenter.y = self.screenshotView.center.y;
-                    } break;
-                    case XYRollViewScrollDirectionVertical: {
-                        targetCenter.x = self.screenshotView.center.x;
-                    } break;
-                    default:
-                        break;
-                }
-                self.screenshotView.center = targetCenter;
-            }];
-            
-            
-            // 检测是否到达边缘，如果到达边缘就开始运行定时器,自动滚动
-            if ([self checkIfScreenshotViewMeetsEdge]) {
-                [self startAutoScrollTimer];
-            }
-            else {
-                [self stopAutoScrollTimer];
-            }
-            //手指按住位置对应的indexPath，可能为nil
-            self.relocatedIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.fingerLocation] : [collectionView indexPathForItemAtPoint:self.fingerLocation];
-            if (self.relocatedIndexPath &&
-                ![self.relocatedIndexPath isEqual:self.originalIndexPath]) {
-                // 移动cell到新的位置
-                [self cellRelocatedToNewIndexPath:self.relocatedIndexPath];
-            }
-        }
-        else {
-            // 其他情况，比如长按手势结束或被取消，移除截图，显示cell
-            [self stopAutoScrollTimer];
-            [self didEndDraging];
-            
+
+- (void)xy_longPressGestureRecognized:(UILongPressGestureRecognizer *)longPress {
+    if (![self isKindOfClass:[UITableView class]] &&
+        ![self isKindOfClass:[UICollectionView class]]) {
+        return;
+    }
+    
+    UIGestureRecognizerState state = longPress.state;
+    UITableView *tableView = nil;
+    UICollectionView *collectionView = nil;
+    if ([self isKindOfClass:[UICollectionView class]]) {
+        collectionView = (UICollectionView *)self;
+    }
+    else if ([self isKindOfClass:[UITableView class]]) {
+        tableView = (UITableView *)self;
+    }
+    
+    // 获取手指在rollView上的坐标
+    self.xy_fingerPosition = [longPress locationInView:longPress.view];
+    NSLog(@"xy_fingerPosition:(%@)", NSStringFromCGPoint(self.xy_fingerPosition));
+    // 手指按住位置对应的indexPath，可能为nil
+    self.xy_newRollIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.xy_fingerPosition] : [collectionView indexPathForItemAtPoint:self.xy_fingerPosition];
+    
+    
+    if (state == UIGestureRecognizerStateBegan) {
+        // 获取beginRollIndexPath，注意容错处理，因为可能为nil
+        self.beginRollIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.xy_fingerPosition] : [collectionView indexPathForItemAtPoint:self.xy_fingerPosition];
+        self.lastRollIndexPath = self.beginRollIndexPath;
+        if (self.lastRollIndexPath) {
+            //手势开始，对被选中cell截图，隐藏原cell
+            [self cellSelectedAtIndexPath:self.lastRollIndexPath];
         }
         
     }
-   
+    else if (state == UIGestureRecognizerStateChanged) {
+        // 长按手势开始移动，判断手指按住位置是否进入其它indexPath范围，若进入则更新数据源并移动cell
+        // 截图跟随手指移动
+        [UIView animateWithDuration:0.1 animations:^{
+            CGPoint xy_screenshotViewCenter = self.xy_screenshotView.center;
+            switch (self.rollDirection) {
+                case XYRollViewScrollDirectionNotKnow: {
+                } break;
+                case XYRollViewScrollDirectionHorizontal: {
+                    xy_screenshotViewCenter.x = self.xy_fingerPosition.x;
+                } break;
+                case XYRollViewScrollDirectionVertical: {
+                    xy_screenshotViewCenter.y = self.xy_fingerPosition.y;
+                } break;
+                default:
+                    break;
+            }
+            self.xy_screenshotView.center = xy_screenshotViewCenter;
+        }];
+        
+        //手指按住位置对应的indexPath，可能为nil
+        self.xy_newRollIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.xy_fingerPosition] : [collectionView indexPathForItemAtPoint:self.xy_fingerPosition];
+        if (self.xy_newRollIndexPath &&
+            ![self.xy_newRollIndexPath isEqual:self.lastRollIndexPath]) {
+            // 移动cell到新的位置
+            [self moveCellToNewIndexPath:self.xy_newRollIndexPath];
+        }
+        // 检测是否到达边缘，如果到达边缘就开始运行定时器,自动滚动
+        if ([self checkIfScreenshotViewMeetsEdge]) {
+            [self startAutoScroll];
+        }
+        else {
+            [self stopAutoScroll];
+        }
+    }
+    else {
+        // 其他情况，比如长按手势结束或被取消，移除截图，显示cell
+        [self stopAutoScroll];
+        [self rollingCellDidEndScroll];
+        
+    }
     
     
 }
-
 
 ////////////////////////////////////////////////////////////////////////
 #pragma mark -
 ////////////////////////////////////////////////////////////////////////
 
 
-- (void)startAutoScrollTimer{
-    if (!self.autoScrollTimer) {
-        self.autoScrollTimer = [CADisplayLink displayLinkWithTarget:self selector:@selector(startAutoScrollCell)];
-        [self.autoScrollTimer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+- (void)startAutoScroll {
+    if (!self.xy_displayLink) {
+        self.xy_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(startAutoScrollCell)];
+        [self.xy_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
     }
 }
 
-- (void)stopAutoScrollTimer {
-    if (self.autoScrollTimer) {
-        [self.autoScrollTimer invalidate];
-        self.autoScrollTimer = nil;
+- (void)stopAutoScroll {
+    if (self.xy_displayLink) {
+        [self.xy_displayLink invalidate];
+        self.xy_displayLink = nil;
     }
 }
 
@@ -237,21 +248,21 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     //判断原始数据是否为嵌套数组
     if ([self.rollingTempArray xy_isArrayInChildElement]) {
         //是嵌套数组
-        if (self.originalIndexPath.section == self.relocatedIndexPath.section) {
+        if (self.lastRollIndexPath.section == self.xy_newRollIndexPath.section) {
             //在同一个section内
-            [self.rollingTempArray[self.originalIndexPath.section] exchangeObjectFromIndex:self.originalIndexPath.row toIndex:self.relocatedIndexPath.row];
+            [self.rollingTempArray[self.lastRollIndexPath.section] exchangeObjectFromIndex:self.lastRollIndexPath.row toIndex:self.xy_newRollIndexPath.row];
         }
         else {
             //不在同一个section内
             // 容错处理：当外界的数组实际类型不是NSMutableArray时，将其转换为NSMutableArray
-            id originalObj = self.rollingTempArray[self.originalIndexPath.section][self.originalIndexPath.item];
-            [self.rollingTempArray[self.relocatedIndexPath.section] insertObject:originalObj atIndex:self.relocatedIndexPath.item];
-            [self.rollingTempArray[self.originalIndexPath.section] removeObjectAtIndex:self.originalIndexPath.item];
+            id originalObj = self.rollingTempArray[self.lastRollIndexPath.section][self.lastRollIndexPath.item];
+            [self.rollingTempArray[self.xy_newRollIndexPath.section] insertObject:originalObj atIndex:self.xy_newRollIndexPath.item];
+            [self.rollingTempArray[self.lastRollIndexPath.section] removeObjectAtIndex:self.lastRollIndexPath.item];
         }
     }
     else {
         //不是嵌套数组
-        [self.rollingTempArray exchangeObjectFromIndex:self.originalIndexPath.row toIndex:self.relocatedIndexPath.row];
+        [self.rollingTempArray exchangeObjectFromIndex:self.lastRollIndexPath.row toIndex:self.xy_newRollIndexPath.row];
     }
     
     if (self.rollingBlock) {
@@ -263,15 +274,20 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 
 // cell被长按手指选中，对其进行截图，原cell隐藏
 - (void)cellSelectedAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.xy_screenshotView) {
+        [self.xy_screenshotView removeFromSuperview];
+        self.xy_screenshotView = nil;
+    }
     UIView *cell = [self cellForIndexPath:indexPath];
     UIView *screenshotView = [cell screenshotViewWithShadowOpacity:self.rollIngShadowOpacity shadowColor:self.rollingColor];
     [self addSubview:screenshotView];
-    self.screenshotView = screenshotView;
+    [self bringSubviewToFront:screenshotView];
+    self.xy_screenshotView = screenshotView;
     cell.hidden = YES;
     [UIView animateWithDuration:0.2 animations:^{
-        self.screenshotView.transform = CGAffineTransformMakeScale(1.03, 1.03);
-        self.screenshotView.alpha = 0.98;
-        self.screenshotView.center = cell.center;
+        self.xy_screenshotView.transform = CGAffineTransformMakeScale(1.03, 1.03);
+        self.xy_screenshotView.alpha = 0.98;
+        self.xy_screenshotView.center = cell.center;
     }];
     
 }
@@ -289,83 +305,100 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 
 /**
  *  截图被移动到新的indexPath范围，这时先更新数据源，重排数组，再将cell移至新位置
- *  @param indexPath 新的indexPath
+ *  @param newIndexPath 新的indexPath
  */
-- (void)cellRelocatedToNewIndexPath:(NSIndexPath *)indexPath{
-    //更新数据源并返回给外部
+- (void)moveCellToNewIndexPath:(NSIndexPath *)newIndexPath{
+    NSLog(@"lastRollIndexPath:%@-------newIndexPath:%@", self.lastRollIndexPath, newIndexPath);
+    // 更新数据源并返回给外部
     [self _updateRollingDataSource];
-    //交换移动cell位置
-    if ([self isKindOfClass:[UITableView class]]) {
-        [(UITableView *)self moveRowAtIndexPath:self.originalIndexPath toIndexPath:indexPath];
-    }
-    else if ([self isKindOfClass:[UICollectionView class]]) {
-        [(UICollectionView *)self moveItemAtIndexPath:self.originalIndexPath toIndexPath:indexPath];
-    }
-    //更新cell的原始indexPath为当前indexPath
-    self.originalIndexPath = indexPath;
-}
-
-// 拖拽结束，显示cell，并移除截图
-- (void)didEndDraging {
-    
     // 通过block将新数组回调给外界以更改数据源，
     if (self.newDataBlock) {
         self.newDataBlock(self.rollingTempArray);
     }
     
-    UIView *cell = [self cellForIndexPath:self.originalIndexPath];
+    if ([newIndexPath isEqual:[NSIndexPath indexPathForRow:15 inSection:0]] || [newIndexPath isEqual:[NSIndexPath indexPathForRow:14 inSection:0]] || [newIndexPath isEqual:[NSIndexPath indexPathForRow:16 inSection:0]]) {
+        NSLog(@"");
+//        return;
+    }
+    //交换移动cell位置
+    if ([self isKindOfClass:[UITableView class]]) {
+        [(UITableView *)self moveRowAtIndexPath:self.lastRollIndexPath toIndexPath:newIndexPath];
+    }
+    else if ([self isKindOfClass:[UICollectionView class]]) {
+        [(UICollectionView *)self moveItemAtIndexPath:self.lastRollIndexPath toIndexPath:newIndexPath];
+    }
+        
+    // 更新lastRollIndexPath当前indexPath
+    self.lastRollIndexPath = newIndexPath;
+}
+
+// 拖拽结束，显示cell，并移除截图
+- (void)rollingCellDidEndScroll {
+    
+    UIView *cell = [self cellForIndexPath:self.lastRollIndexPath];
     
     cell.hidden = NO;
     cell.alpha = 0;
     [UIView animateWithDuration:0.2 animations:^{
-        self.screenshotView.center = cell.center;
-        self.screenshotView.alpha = 0;
-        self.screenshotView.transform = CGAffineTransformIdentity;
+        self.xy_screenshotView.center = cell.center;
+        self.xy_screenshotView.alpha = 0;
+        self.xy_screenshotView.transform = CGAffineTransformIdentity;
         cell.alpha = 1;
     } completion:^(BOOL finished) {
         cell.hidden = NO;
-        [self.screenshotView removeFromSuperview];
-        self.screenshotView = nil;
-        self.originalIndexPath = nil;
-        self.relocatedIndexPath = nil;
+        [self.xy_screenshotView removeFromSuperview];
+//        // 更新数据源并返回给外部
+//        [self _updateRollingDataSource];
+//        // 通过block将新数组回调给外界以更改数据源，
+//        if (self.newDataBlock) {
+//            self.newDataBlock(self.rollingTempArray);
+//        }
+        self.xy_screenshotView = nil;
+        self.beginRollIndexPath = nil;
+        self.xy_newRollIndexPath = nil;
+        self.lastRollIndexPath = nil;
     }];
-    
     
 }
 
 
 // 检查截图是否到达边缘，并作出响应
-- (BOOL)checkIfScreenshotViewMeetsEdge{
+- (BOOL)checkIfScreenshotViewMeetsEdge {
     
-    NSLog(@"%ld", self.autoScrollDirection);
-    
-    CGFloat minY = CGRectGetMinY(self.screenshotView.frame);
-    CGFloat maxY = CGRectGetMaxY(self.screenshotView.frame);
-    CGFloat MinX = CGRectGetMinX(self.screenshotView.frame);
-    CGFloat maxX = CGRectGetMaxX(self.screenshotView.frame);
+    CGFloat minY = CGRectGetMinY(self.xy_screenshotView.frame);
+    CGFloat maxY = CGRectGetMaxY(self.xy_screenshotView.frame);
+    CGFloat MinX = CGRectGetMinX(self.xy_screenshotView.frame);
+    CGFloat maxX = CGRectGetMaxX(self.xy_screenshotView.frame);
     if (minY < self.contentOffset.y) {
-        self.autoScrollDirection = XYRollViewAutoScrollDirectionTop;
+        self.xy_autoScrollDirection = XYRollViewautoScrollDirectionTop;
         return YES;
     }
     if (maxY > self.bounds.size.height + self.contentOffset.y) {
-        self.autoScrollDirection = XYRollViewAutoScrollDirectionBottom;
+        self.xy_autoScrollDirection = XYRollViewautoScrollDirectionBottom;
         return YES;
     }
-    if (MinX < self.contentOffset.x) {
-        self.autoScrollDirection = XYRollViewAutoScrollDirectionLeft;
-        return YES;
+    if ([self isKindOfClass:[UICollectionView class]]) {
+        UICollectionView *collectionView = (UICollectionView *)self;
+        UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
+        if (flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+            if (MinX < self.contentOffset.x) {
+                self.xy_autoScrollDirection = XYRollViewautoScrollDirectionLeft;
+                return YES;
+            }
+            if (maxX > self.bounds.size.width + self.contentOffset.x) {
+                self.xy_autoScrollDirection = XYRollViewautoScrollDirectionRight;
+                return YES;
+            }
+        }
+        
     }
-    if (maxX > self.bounds.size.width + self.contentOffset.x) {
-        self.autoScrollDirection = XYRollViewAutoScrollDirectionRight;
-        return YES;
-    }
-    self.autoScrollDirection = XYRollViewAutoScrollDirectionNone;
+    
+    self.xy_autoScrollDirection = XYRollViewautoScrollDirectionNone;
     return NO;
 }
 
 // 开始自动滚动
 - (void)startAutoScrollCell {
-    
     // 设置自动滚动速度
     if (self.autoRollCellSpeed == 0.0) {
         self.autoRollCellSpeed = 5.0;
@@ -375,51 +408,48 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     CGFloat autoRollCellSpeed = self.autoRollCellSpeed; // 滚动速度，数值越大滚动越快
     
     if (self.rollDirection == XYRollViewScrollDirectionVertical &&
-        self.autoScrollDirection == XYRollViewAutoScrollDirectionTop) {//向上滚动
+        self.xy_autoScrollDirection == XYRollViewautoScrollDirectionTop) {//向上滚动
         //向上滚动最大范围限制
         if (self.contentOffset.y > 0) {
             
             self.contentOffset = CGPointMake(0, self.contentOffset.y - autoRollCellSpeed);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y - autoRollCellSpeed);
+            self.xy_screenshotView.center = CGPointMake(self.xy_screenshotView.center.x, self.xy_screenshotView.center.y - autoRollCellSpeed);
         }
-        return;
     } else if (self.rollDirection == XYRollViewScrollDirectionVertical &&
-               self.autoScrollDirection == XYRollViewAutoScrollDirectionBottom) { // 向下滚动
+               self.xy_autoScrollDirection == XYRollViewautoScrollDirectionBottom) { // 向下滚动
         //向下滚动最大范围限制
         if (self.contentOffset.y + self.bounds.size.height < self.contentSize.height) {
             
             self.contentOffset = CGPointMake(0, self.contentOffset.y + autoRollCellSpeed);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x, self.screenshotView.center.y + autoRollCellSpeed);
+            self.xy_screenshotView.center = CGPointMake(self.xy_screenshotView.center.x, self.xy_screenshotView.center.y + autoRollCellSpeed);
         }
-        return;
-    } else if (self.autoScrollDirection == XYRollViewAutoScrollDirectionLeft) {
+    } else if (self.xy_autoScrollDirection == XYRollViewautoScrollDirectionLeft) {
         // 向左滚动滚动的最大范围限制
         if (self.contentOffset.x > 0) {
             self.contentOffset = CGPointMake(self.contentOffset.x - autoRollCellSpeed, 0);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x - autoRollCellSpeed, self.screenshotView.center.y);
+            self.xy_screenshotView.center = CGPointMake(self.xy_screenshotView.center.x - autoRollCellSpeed, self.xy_screenshotView.center.y);
         }
-        return;
-    } else if (self.autoScrollDirection == XYRollViewAutoScrollDirectionRight) {
+    } else if (self.xy_autoScrollDirection == XYRollViewautoScrollDirectionRight) {
         
         // 向右滚动滚动的最大范围限制
         if (self.contentOffset.x + self.bounds.size.width < self.contentSize.width) {
             self.contentOffset = CGPointMake(self.contentOffset.x + autoRollCellSpeed, self.contentOffset.y);
-            self.screenshotView.center = CGPointMake(self.screenshotView.center.x + autoRollCellSpeed, self.screenshotView.center.y);
+            self.xy_screenshotView.center = CGPointMake(self.xy_screenshotView.center.x + autoRollCellSpeed, self.xy_screenshotView.center.y);
         }
-        return;
     }
     
     //  当把截图拖动到边缘自动滚动,手指不动手时，手动触发
     if ([self isKindOfClass:[UITableView class]]) {
         
-        self.relocatedIndexPath = [(UITableView *)self indexPathForRowAtPoint:self.screenshotView.center];
+        self.xy_newRollIndexPath = [(UITableView *)self indexPathForRowAtPoint:self.xy_screenshotView.center];
     }
     else if ([self isKindOfClass:[UICollectionView class]]) {
-        self.relocatedIndexPath = [(UICollectionView *)self indexPathForItemAtPoint:self.screenshotView.center];
+        self.xy_newRollIndexPath = [(UICollectionView *)self indexPathForItemAtPoint:self.xy_screenshotView.center];
     }
     
-    if (self.relocatedIndexPath && ![self.relocatedIndexPath isEqual:self.originalIndexPath]) {
-        [self cellRelocatedToNewIndexPath:self.relocatedIndexPath];
+    if (self.xy_newRollIndexPath &&
+        ![self.xy_newRollIndexPath isEqual:self.lastRollIndexPath]) {
+        [self moveCellToNewIndexPath:self.xy_newRollIndexPath];
     }
 }
 
@@ -428,42 +458,55 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 #pragma mark - set \ get
 ////////////////////////////////////////////////////////////////////////
 
-- (void)setScreenshotView:(UIView *)screenshotView {
+- (void)setXy_screenshotView:(UIView *)screenshotView {
     
-    objc_setAssociatedObject(self, XYRollViewScreenshotViewKey, screenshotView, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(self, XYRollViewScreenshotViewKey, screenshotView, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (UIView *)screenshotView {
+- (UIView *)xy_screenshotView {
     return objc_getAssociatedObject(self, XYRollViewScreenshotViewKey);
 }
 
-- (void)setOriginalIndexPath:(NSIndexPath *)originalIndexPath {
-    objc_setAssociatedObject(self, XYRollViewOriginalIndexPathKey, originalIndexPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setBeginRollIndexPath:(NSIndexPath *)beginRollIndexPath {
+    objc_setAssociatedObject(self, XYRollViewBeginRollIndexPathKey, beginRollIndexPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (NSIndexPath *)originalIndexPath {
-    return objc_getAssociatedObject(self, XYRollViewOriginalIndexPathKey);
-}
-
-- (void)setRelocatedIndexPath:(NSIndexPath *)relocatedIndexPath {
-    objc_setAssociatedObject(self, XYRollViewRelocatedIndexPathKey, relocatedIndexPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (NSIndexPath *)beginRollIndexPath {
+    return objc_getAssociatedObject(self, XYRollViewBeginRollIndexPathKey);
 }
 
-- (NSIndexPath *)relocatedIndexPath {
-    return objc_getAssociatedObject(self, XYRollViewRelocatedIndexPathKey);
+- (void)setXy_newRollIndexPath:(NSIndexPath *)xy_newRollIndexPath {
+    NSIndexPath *indexPath = [self xy_newRollIndexPath];
+    if ([indexPath isEqual:xy_newRollIndexPath]) {
+        return;
+    }
+//    if ([indexPath isEqual:[NSIndexPath indexPathForRow:21 inSection:0]]) {
+//        NSLog(@"xy_fingerPosition(21):%@", NSStringFromCGPoint(self.xy_fingerPosition));
+//    }
+//    if ([indexPath isEqual:[NSIndexPath indexPathForRow:15 inSection:0]] || [indexPath isEqual:[NSIndexPath indexPathForRow:14 inSection:0]] || [indexPath isEqual:[NSIndexPath indexPathForRow:16 inSection:0]]) {
+//        NSLog(@"xy_fingerPosition(15):%@", NSStringFromCGPoint(self.xy_fingerPosition));
+//
+//    }
+    objc_setAssociatedObject(self, XYRollViewNewRollIndexPathKey, xy_newRollIndexPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)setAutoScrollTimer:(CADisplayLink *)autoScrollTimer {
-    objc_setAssociatedObject(self, XYRollViewAutoScrollTimerKey, autoScrollTimer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-- (CADisplayLink *)autoScrollTimer {
-    return objc_getAssociatedObject(self, XYRollViewAutoScrollTimerKey);
+- (NSIndexPath *)xy_newRollIndexPath {
+    return objc_getAssociatedObject(self, XYRollViewNewRollIndexPathKey);
 }
 
-- (void)setFingerLocation:(CGPoint)fingerLocation {
-    objc_setAssociatedObject(self, XYRollViewFingerLocationKey, NSStringFromCGPoint(fingerLocation), OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setXy_displayLink:(CADisplayLink *)xy_displayLink {
+    objc_setAssociatedObject(self, XYRollViewDisplayLinkKey, xy_displayLink, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (CGPoint)fingerLocation {
-    NSString *str = objc_getAssociatedObject(self, XYRollViewFingerLocationKey);
-    return CGPointFromString(str);
+- (CADisplayLink *)xy_displayLink {
+    return objc_getAssociatedObject(self, XYRollViewDisplayLinkKey);
+}
+
+- (void)setXy_fingerPosition:(CGPoint)xy_fingerPosition {
+    NSValue *pointValue = [NSValue valueWithCGPoint:xy_fingerPosition];
+    objc_setAssociatedObject(self, @selector(xy_fingerPosition), pointValue, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+- (CGPoint)xy_fingerPosition {
+    NSValue *pointValue = objc_getAssociatedObject(self, _cmd);
+    CGPoint xy_fingerPosition = [pointValue CGPointValue];
+    return xy_fingerPosition;
 }
 
 - (void)setAutoRollCellSpeed:(CGFloat)autoRollCellSpeed {
@@ -478,13 +521,13 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     return autoRollCellSpeed;
 }
 
-- (void)setAutoScrollDirection:(XYRollViewAutoScrollDirection)autoScrollDirection {
+- (void)setXy_autoScrollDirection:(XYRollViewautoScrollDirection)autoScrollDirection {
     
-    objc_setAssociatedObject(self, XYRollViewAutoScrollDirectionKey, @(autoScrollDirection), OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(self, XYRollViewautoScrollDirectionKey, @(autoScrollDirection), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-- (XYRollViewAutoScrollDirection)autoScrollDirection {
+- (XYRollViewautoScrollDirection)xy_autoScrollDirection {
     
-    return [objc_getAssociatedObject(self, XYRollViewAutoScrollDirectionKey) integerValue];;
+    return [objc_getAssociatedObject(self, XYRollViewautoScrollDirectionKey) integerValue];;
 }
 
 
@@ -506,6 +549,14 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     return objc_getAssociatedObject(self, XYRollViewOriginalDataBlockKey);
 }
 
+- (void)setLastRollIndexPath:(NSIndexPath *)lastRollIndexPath {
+    objc_setAssociatedObject(self, XYRollViewLastRollIndexPath, lastRollIndexPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSIndexPath *)lastRollIndexPath {
+    return objc_getAssociatedObject(self, XYRollViewLastRollIndexPath);
+}
+
 - (void)setRollingColor:(UIColor *)rollingColor {
     objc_setAssociatedObject(self, XYRollViewRollingColorKey, rollingColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
@@ -521,7 +572,7 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     objc_setAssociatedObject(self, XYRollViewRollIngShadowOpacityKey, @(rollIngShadowOpacity), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 - (CGFloat)rollIngShadowOpacity {
-    CGFloat rollIngShadowOpacity= [objc_getAssociatedObject(self, XYRollViewRollIngShadowOpacityKey) doubleValue];
+    CGFloat rollIngShadowOpacity = [objc_getAssociatedObject(self, XYRollViewRollIngShadowOpacityKey) doubleValue];
     if (rollIngShadowOpacity == 0.0) {
         return 0.3;
     }
@@ -529,16 +580,13 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 }
 
 
-- (void)setLongPress:(UILongPressGestureRecognizer *)longPress {
-    objc_setAssociatedObject(self, @selector(longPress), longPress, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (UILongPressGestureRecognizer *)longPress {
+- (UILongPressGestureRecognizer *)xy_longPress {
     UILongPressGestureRecognizer *longPress = objc_getAssociatedObject(self, _cmd);
     if (!longPress) {
-        longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGestureRecognized:)];
+        longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(xy_longPressGestureRecognized:)];
         [self addGestureRecognizer:longPress];
-        self.longPress = longPress;
+        longPress.delegate = self;
+        objc_setAssociatedObject(self, _cmd, longPress, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return longPress;
 }
@@ -548,12 +596,23 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     objc_setAssociatedObject(self, @selector(rollingTempArray), rollingTempArray, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)setRollDirection:(XYRollViewScrollDirection)rollDirection {
-    objc_setAssociatedObject(self, @selector(rollDirection), @(rollDirection), OBJC_ASSOCIATION_ASSIGN);
-}
 
 - (XYRollViewScrollDirection)rollDirection {
-    return (XYRollViewScrollDirection)[objc_getAssociatedObject(self, _cmd) integerValue];
+    XYRollViewScrollDirection rollDirection = 0;
+    if ([self isKindOfClass:[UITableView class]]) {
+        rollDirection = XYRollViewScrollDirectionVertical;
+    }
+    else if ([self isKindOfClass:[UICollectionView class]]) {
+        UICollectionView *collectionView = (UICollectionView *)self;
+        UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
+        if (flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+            rollDirection = XYRollViewScrollDirectionHorizontal;
+        }
+        else {
+            rollDirection = XYRollViewScrollDirectionVertical;
+        }
+    }
+    return rollDirection;
 }
 
 - (NSMutableArray *)rollingTempArray {
@@ -567,6 +626,7 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
 - (XYRollingBlock)rollingBlock {
     return objc_getAssociatedObject(self, _cmd);
 }
+
 
 @end
 
@@ -586,15 +646,15 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
     UIGraphicsEndImageContext();
     
     // 通过图形上下文生成的图片，创建一个和图片尺寸相同大小的imageView，将其作为截图返回
-    UIImageView *screenshotView = [[UIImageView alloc] initWithImage:image];
-    screenshotView.center = self.center;
-    screenshotView.layer.masksToBounds = NO;
-    screenshotView.layer.cornerRadius = 0.0;
-    screenshotView.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
-    screenshotView.layer.shadowRadius = 5.0;
-    screenshotView.layer.shadowOpacity = shadowOpacity;
-    screenshotView.layer.shadowColor = shadowColor.CGColor;
-    return screenshotView;
+    UIImageView *screenshotImageView = [[UIImageView alloc] initWithImage:image];
+    screenshotImageView.center = self.center;
+    screenshotImageView.layer.masksToBounds = NO;
+    screenshotImageView.layer.cornerRadius = 0.0;
+    screenshotImageView.layer.shadowOffset = CGSizeMake(-5.0, 0.0);
+    screenshotImageView.layer.shadowRadius = 5.0;
+    screenshotImageView.layer.shadowOpacity = shadowOpacity;
+    screenshotImageView.layer.shadowColor = shadowColor.CGColor;
+    return screenshotImageView;
 }
 
 
@@ -608,7 +668,8 @@ char * const XYRollViewUpdateDataGroupKey = "XYRollViewUpdateDataGroupKey";
         for (NSInteger i = fromIndex; i < toIndex; i++) {
             [self exchangeObjectAtIndex:i withObjectAtIndex:i + 1];
         }
-    } else {
+    }
+    else {
         for (NSInteger i = fromIndex; i > toIndex; i--) {
             [self exchangeObjectAtIndex:i withObjectAtIndex:i - 1];
         }
