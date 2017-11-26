@@ -122,7 +122,6 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     self.newDataBlock = newDataBlock;
     self.rollingBlock = rollingBlock;
     [self xy_longPress];
-
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -146,9 +145,15 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         tableView = (UITableView *)self;
     }
     
+#warning Mark: iOS11 下 locationInView:bug 获取当前手指所在的点存在错误，导致瞬间移动乱窜，待解决
     // 获取手指在rollView上的坐标
-    self.xy_fingerPosition = [longPress locationInView:longPress.view];
+    CGPoint fingerPosition = [longPress locationInView:longPress.view];
     NSLog(@"xy_fingerPosition:(%@)", NSStringFromCGPoint(self.xy_fingerPosition));
+    if (!CGPointEqualToPoint(self.xy_fingerPosition, CGPointZero) && fingerPosition.y - self.xy_fingerPosition.y >= 100) {
+//        return;
+    }
+    self.xy_fingerPosition = fingerPosition;
+    
     // 手指按住位置对应的indexPath，可能为nil
     self.xy_newRollIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.xy_fingerPosition] : [collectionView indexPathForItemAtPoint:self.xy_fingerPosition];
     
@@ -308,7 +313,7 @@ else if ([self isKindOfClass:[UITableView class]]) {\
  *  @param newIndexPath 新的indexPath
  */
 - (void)moveCellToNewIndexPath:(NSIndexPath *)newIndexPath{
-    NSLog(@"lastRollIndexPath:%@-------newIndexPath:%@", self.lastRollIndexPath, newIndexPath);
+//    NSLog(@"lastRollIndexPath:%@-------newIndexPath:%@", self.lastRollIndexPath, newIndexPath);
     // 更新数据源并返回给外部
     [self _updateRollingDataSource];
     // 通过block将新数组回调给外界以更改数据源，
@@ -344,8 +349,8 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         self.xy_screenshotView.alpha = 0;
         self.xy_screenshotView.transform = CGAffineTransformIdentity;
         cell.alpha = 1;
-    } completion:^(BOOL finished) {
         cell.hidden = NO;
+    } completion:^(BOOL finished) {
         [self.xy_screenshotView removeFromSuperview];
 //        // 更新数据源并返回给外部
 //        [self _updateRollingDataSource];
@@ -357,6 +362,7 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         self.beginRollIndexPath = nil;
         self.xy_newRollIndexPath = nil;
         self.lastRollIndexPath = nil;
+        self.xy_fingerPosition = CGPointZero;
     }];
     
 }
