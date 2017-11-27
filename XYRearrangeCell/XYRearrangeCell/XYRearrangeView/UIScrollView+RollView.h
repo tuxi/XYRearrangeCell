@@ -17,8 +17,8 @@ typedef NS_ENUM(NSInteger, XYRollViewScrollDirection) {
 };
 
 typedef void(^XYRollNewDataBlock)(NSArray * __nullable newData);
-typedef NSArray *__nonnull(^XYRollOriginalDataBlock)();
-typedef void(^XYRollingBlock)();
+typedef NSArray *__nonnull(^XYRollOriginalDataBlock)(void);
+typedef void(^XYRollingBlock)(void);
 
 @interface UIScrollView (RollView)
 
@@ -31,7 +31,7 @@ typedef void(^XYRollingBlock)();
 /** cell拖拽到屏幕边缘时，其他cell的滚动速度，数值越大滚动越快，默认为5.0,最大为15 */
 @property (nonatomic, assign) CGFloat autoRollCellSpeed;
 
-/** cell拖拽时允许拖拽的方向*/
+/** cell拖拽时允许拖拽的方向 */
 @property (nonatomic, assign, readonly) XYRollViewScrollDirection rollDirection;
 
 /**
