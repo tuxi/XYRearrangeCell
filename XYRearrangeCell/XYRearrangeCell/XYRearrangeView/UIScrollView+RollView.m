@@ -135,7 +135,6 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         return;
     }
     
-    UIGestureRecognizerState state = longPress.state;
     UITableView *tableView = nil;
     UICollectionView *collectionView = nil;
     if ([self isKindOfClass:[UICollectionView class]]) {
@@ -149,16 +148,16 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     // 获取手指在rollView上的坐标
     CGPoint fingerPosition = [longPress locationInView:longPress.view];
     NSLog(@"xy_fingerPosition:(%@)", NSStringFromCGPoint(self.xy_fingerPosition));
-    if (!CGPointEqualToPoint(self.xy_fingerPosition, CGPointZero) && fingerPosition.y - self.xy_fingerPosition.y >= 100) {
-//        return;
-    }
+//    if (!CGPointEqualToPoint(self.xy_fingerPosition, CGPointZero) && fingerPosition.y - self.xy_fingerPosition.y >= 100) {
+////        return;
+//    }
     self.xy_fingerPosition = fingerPosition;
     
     // 手指按住位置对应的indexPath，可能为nil
     self.xy_newRollIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.xy_fingerPosition] : [collectionView indexPathForItemAtPoint:self.xy_fingerPosition];
     
     
-    if (state == UIGestureRecognizerStateBegan) {
+    if (longPress.state == UIGestureRecognizerStateBegan) {
         // 获取beginRollIndexPath，注意容错处理，因为可能为nil
         self.beginRollIndexPath = tableView ? [tableView indexPathForRowAtPoint:self.xy_fingerPosition] : [collectionView indexPathForItemAtPoint:self.xy_fingerPosition];
         self.lastRollIndexPath = self.beginRollIndexPath;
@@ -168,13 +167,15 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         }
         
     }
-    else if (state == UIGestureRecognizerStateChanged) {
+    else if (longPress.state == UIGestureRecognizerStateChanged) {
         // 长按手势开始移动，判断手指按住位置是否进入其它indexPath范围，若进入则更新数据源并移动cell
         // 截图跟随手指移动
         [UIView animateWithDuration:0.1 animations:^{
             CGPoint xy_screenshotViewCenter = self.xy_screenshotView.center;
             switch (self.rollDirection) {
                 case XYRollViewScrollDirectionNotKnow: {
+                    xy_screenshotViewCenter.x = self.xy_fingerPosition.x;
+                    xy_screenshotViewCenter.y = self.xy_fingerPosition.y;
                 } break;
                 case XYRollViewScrollDirectionHorizontal: {
                     xy_screenshotViewCenter.x = self.xy_fingerPosition.x;
@@ -413,7 +414,7 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     }
     CGFloat autoRollCellSpeed = self.autoRollCellSpeed; // 滚动速度，数值越大滚动越快
     
-    if (self.rollDirection == XYRollViewScrollDirectionVertical &&
+    if ((self.rollDirection == XYRollViewScrollDirectionVertical || self.rollDirection == XYRollViewScrollDirectionNotKnow) &&
         self.xy_autoScrollDirection == XYRollViewautoScrollDirectionTop) {//向上滚动
         //向上滚动最大范围限制
         if (self.contentOffset.y > 0) {
@@ -421,7 +422,7 @@ else if ([self isKindOfClass:[UITableView class]]) {\
             self.contentOffset = CGPointMake(0, self.contentOffset.y - autoRollCellSpeed);
             self.xy_screenshotView.center = CGPointMake(self.xy_screenshotView.center.x, self.xy_screenshotView.center.y - autoRollCellSpeed);
         }
-    } else if (self.rollDirection == XYRollViewScrollDirectionVertical &&
+    } else if ((self.rollDirection == XYRollViewScrollDirectionVertical || self.rollDirection == XYRollViewScrollDirectionNotKnow) &&
                self.xy_autoScrollDirection == XYRollViewautoScrollDirectionBottom) { // 向下滚动
         //向下滚动最大范围限制
         if (self.contentOffset.y + self.bounds.size.height < self.contentSize.height) {
@@ -484,13 +485,6 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     if ([indexPath isEqual:xy_newRollIndexPath]) {
         return;
     }
-//    if ([indexPath isEqual:[NSIndexPath indexPathForRow:21 inSection:0]]) {
-//        NSLog(@"xy_fingerPosition(21):%@", NSStringFromCGPoint(self.xy_fingerPosition));
-//    }
-//    if ([indexPath isEqual:[NSIndexPath indexPathForRow:15 inSection:0]] || [indexPath isEqual:[NSIndexPath indexPathForRow:14 inSection:0]] || [indexPath isEqual:[NSIndexPath indexPathForRow:16 inSection:0]]) {
-//        NSLog(@"xy_fingerPosition(15):%@", NSStringFromCGPoint(self.xy_fingerPosition));
-//
-//    }
     objc_setAssociatedObject(self, XYRollViewNewRollIndexPathKey, xy_newRollIndexPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -592,6 +586,13 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(xy_longPressGestureRecognized:)];
         [self addGestureRecognizer:longPress];
         longPress.delegate = self;
+        
+        // 当是侧滑手势的时候设置scrollview需要此手势失效才生效即可
+        for (UIGestureRecognizer *gesture in self.gestureRecognizers) {
+            if ([gesture isKindOfClass:[UIScreenEdgePanGestureRecognizer class]]) {
+                [self.panGestureRecognizer requireGestureRecognizerToFail:gesture];
+            }
+        }
         objc_setAssociatedObject(self, _cmd, longPress, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return longPress;
@@ -609,14 +610,15 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         rollDirection = XYRollViewScrollDirectionVertical;
     }
     else if ([self isKindOfClass:[UICollectionView class]]) {
-        UICollectionView *collectionView = (UICollectionView *)self;
-        UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
-        if (flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
-            rollDirection = XYRollViewScrollDirectionHorizontal;
-        }
-        else {
-            rollDirection = XYRollViewScrollDirectionVertical;
-        }
+//        UICollectionView *collectionView = (UICollectionView *)self;
+//        UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)collectionView.collectionViewLayout;
+        rollDirection = XYRollViewScrollDirectionNotKnow;
+//        if (flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+//            rollDirection = XYRollViewScrollDirectionHorizontal;
+//        }
+//        else {
+//            rollDirection = XYRollViewScrollDirectionVertical;
+//        }
     }
     return rollDirection;
 }

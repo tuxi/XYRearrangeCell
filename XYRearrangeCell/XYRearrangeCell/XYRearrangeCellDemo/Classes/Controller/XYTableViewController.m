@@ -46,7 +46,7 @@ static NSString * const identifier = @"identifier";
     }];
 
     
-    self.tableView.rowHeight = 60;
+//    self.tableView.rowHeight = 60;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rollingColor = [UIColor blackColor];
     self.tableView.backgroundColor = xColorWithRGB(240, 240, 240);
@@ -95,7 +95,9 @@ static NSString * const identifier = @"identifier";
     return cell;
 }
 
-
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60.0;
+}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     // 检测是不是嵌套数组

@@ -26,7 +26,6 @@
     self.sub_title.text = item.subTitle;
     self.title_label.textColor = xRandomColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-//    self.accessoryType = UITableViewCellAccessoryCheckmark;
     
 }
 @end
