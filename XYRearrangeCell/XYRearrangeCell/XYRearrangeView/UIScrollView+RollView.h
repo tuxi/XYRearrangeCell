@@ -34,6 +34,9 @@ typedef void(^XYRollingBlock)(void);
 /** cell拖拽时允许拖拽的方向 */
 @property (nonatomic, assign, readonly) XYRollViewScrollDirection rollDirection;
 
+/** 是否运行cell拖拽 */
+@property (nonatomic, assign, getter=isRolleEnabled) BOOL rolleEnabled;
+
 /**
  @param originalDataBlock 源数据源
  @param newDataBlock     滚动完后的最终数据源，该block只会回调一次

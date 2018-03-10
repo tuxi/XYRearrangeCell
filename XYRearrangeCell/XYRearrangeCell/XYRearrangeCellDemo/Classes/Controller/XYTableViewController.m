@@ -42,7 +42,6 @@ static NSString * const identifier = @"identifier";
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
         // 更改完成后，根据情况确定是否刷新一次tableView
-//        [self.tableView reloadData];
     }];
 
     
@@ -54,7 +53,10 @@ static NSString * const identifier = @"identifier";
     
     [self setupPlans];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"恢复数据" style:0 target:self action:@selector(refreshData)];
+    UIBarButtonItem *rItem1 = [[UIBarButtonItem alloc] initWithTitle:@"close" style:0 target:self action:@selector(invalidMovement:)];
+    rItem1.accessibilityIdentifier = @"open";
+    UIBarButtonItem *rItem2 = [[UIBarButtonItem alloc] initWithTitle:@"恢复数据" style:0 target:self action:@selector(refreshData)];
+    self.navigationItem.rightBarButtonItems = @[rItem1, rItem2];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"切换分组数据" style:0 target:self action:@selector(changeGroupData)];
 }
 
@@ -173,6 +175,19 @@ static NSString * const identifier = @"identifier";
         }
     }
     return NO;
+}
+
+- (void)invalidMovement:(UIBarButtonItem *)item {
+    if ([item.accessibilityIdentifier isEqualToString:@"open"]) {
+        self.tableView.rolleEnabled = NO;
+        item.accessibilityIdentifier = @"close";
+        item.title = @"open";
+    }
+    else {
+        self.tableView.rolleEnabled = YES;
+        item.accessibilityIdentifier = @"open";
+        item.title = @"close";
+    }
 }
 
 @end

@@ -579,6 +579,13 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     return rollIngShadowOpacity;
 }
 
+- (void)setRolleEnabled:(BOOL)rolleEnabled {
+    self.xy_longPress.enabled = rolleEnabled;
+}
+
+- (BOOL)rolleEnabled {
+    return self.xy_longPress.isEnabled;
+}
 
 - (UILongPressGestureRecognizer *)xy_longPress {
     UILongPressGestureRecognizer *longPress = objc_getAssociatedObject(self, _cmd);
