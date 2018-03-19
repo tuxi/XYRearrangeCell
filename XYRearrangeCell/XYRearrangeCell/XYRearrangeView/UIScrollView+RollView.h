@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, XYRollViewScrollDirection) {
 
 typedef void(^XYRollNewDataBlock)(NSArray * __nullable newData);
 typedef NSArray *__nonnull(^XYRollOriginalDataBlock)(void);
-typedef void(^XYRollingBlock)(void);
+typedef void(^XYRollingBlock)(NSIndexPath *beginIndexPath, NSIndexPath *currentIndexPath);
 
 @interface UIScrollView (RollView)
 

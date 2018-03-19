@@ -144,13 +144,8 @@ else if ([self isKindOfClass:[UITableView class]]) {\
         tableView = (UITableView *)self;
     }
     
-#warning Mark: iOS11 下 locationInView:bug 获取当前手指所在的点存在错误，导致瞬间移动乱窜，待解决
     // 获取手指在rollView上的坐标
     CGPoint fingerPosition = [longPress locationInView:longPress.view];
-    NSLog(@"xy_fingerPosition:(%@)", NSStringFromCGPoint(self.xy_fingerPosition));
-//    if (!CGPointEqualToPoint(self.xy_fingerPosition, CGPointZero) && fingerPosition.y - self.xy_fingerPosition.y >= 100) {
-////        return;
-//    }
     self.xy_fingerPosition = fingerPosition;
     
     // 手指按住位置对应的indexPath，可能为nil
@@ -272,7 +267,7 @@ else if ([self isKindOfClass:[UITableView class]]) {\
     }
     
     if (self.rollingBlock) {
-        self.rollingBlock();
+        self.rollingBlock(self.beginRollIndexPath, self.xy_newRollIndexPath);
     }
 }
 

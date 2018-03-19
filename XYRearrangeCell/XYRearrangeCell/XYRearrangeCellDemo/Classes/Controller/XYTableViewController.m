@@ -35,9 +35,11 @@ static NSString * const identifier = @"identifier";
     
     self.tableView.rollingColor = [UIColor purpleColor];
     
-    [self.tableView xy_rollViewFormOriginalDataSourceBlock:^NSArray *{
-        return self.plans; // 返回当前的数据给tableView内部处理
-    } newDataSourceBlock:^(NSArray *newData) {
+    [self.tableView xy_rollViewFormOriginalDataSourceBlock:^NSArray * _Nonnull{
+        return self.plans;
+    } rollingBlock:^(NSIndexPath * _Nonnull originalIndexPath, NSIndexPath * _Nonnull currentIndexPath) {
+        NSLog(@"%@-------%@",originalIndexPath, currentIndexPath);
+    } newDataSourceBlock:^(NSArray * _Nullable newData) {
         // 回调处理完成的数据给外界
         [self.plans removeAllObjects];
         [self.plans addObjectsFromArray:newData];
